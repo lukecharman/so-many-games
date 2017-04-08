@@ -12,6 +12,7 @@ class ListViewController: UICollectionViewController {
 
     var games: [Game] = Backlog().games
     var button = ActionButton(title: "+")
+    var sortButton = ActionButton(title: "s")
 
     var selectedGames = [Game]()
     var programmaticDeselection = false
@@ -32,6 +33,7 @@ extension ListViewController {
         button.titleLabel?.font = UIFont(name: "RPGSystem", size: 70)
 
         makeAddButton()
+        makeSortButton()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -53,8 +55,18 @@ extension ListViewController {
 
         superview.addSubview(button)
 
-        button.anchor(to: collectionView)
+        button.anchor(to: collectionView, at: .bottom)
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+    }
+
+    func makeSortButton() {
+        guard let collectionView = collectionView else { return }
+        guard let superview = collectionView.superview else { return }
+
+        superview.addSubview(sortButton)
+
+        sortButton.anchor(to: collectionView, at: .top)
+        sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
     }
 
     func buttonTapped() {
@@ -62,6 +74,27 @@ extension ListViewController {
             performSegue(withIdentifier: "AddGame", sender: nil)
         } else {
             delete()
+        }
+    }
+
+    func sortButtonTapped() {
+        Backlog().sort()
+        collectionView?.performBatchUpdates({
+            self.animateReorder()
+        }, completion: { _ in
+            self.games = Backlog().games
+            self.collectionView?.reloadData()
+        })
+    }
+
+    func animateReorder() {
+        let old = self.games
+        let new = Backlog().games
+
+        for index in 0..<old.count {
+            let fromIndexPath = IndexPath(item: index, section: 0)
+            let toIndexPath = IndexPath(item: new.index(of: old[index])!, section: 0)
+            collectionView?.moveItem(at: fromIndexPath, to: toIndexPath)
         }
     }
 
@@ -92,9 +125,11 @@ extension ListViewController {
     }
 
     func markAsCompleted(game: Game) {
-        Backlog().remove([game])
+        Backlog().move(game, from: .active, to: .completed)
         games = Backlog().games
         collectionView?.reloadData()
+        print("Active: \(Backlog().gameList.games().count)")
+        print("Completed: \(Backlog().completedGameList.games().count)")
     }
 
     func confirmDelete() {
@@ -199,7 +234,7 @@ extension ListViewController {
         games[sourceIndexPath.item] = games[destinationIndexPath.item]
         games[destinationIndexPath.item] = swap
 
-        Backlog().move(sourceIndexPath.item, to: destinationIndexPath.item)
+        Backlog().reorder(sourceIndexPath.item, to: destinationIndexPath.item)
     }
 
 }

@@ -6,11 +6,18 @@
 //  Copyright © 2017 Luke Charman. All rights reserved.
 //
 
+import Realm
 import RealmSwift
 
 class GameList: Object {
 
+    var id: String = ""
     var list = List<Game>()
+
+    convenience init(id: String) {
+        self.init()
+        self.id = id
+    }
 
     func games() -> [Game] {
         return list.map { $0 }

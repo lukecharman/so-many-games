@@ -10,6 +10,11 @@ import UIKit
 
 class ActionButton: UIButton {
 
+    enum ActionButtonAnchor {
+        case top
+        case bottom
+    }
+
     static let spacing: CGFloat = 16
     static let side: CGFloat = 52
 
@@ -18,12 +23,17 @@ class ActionButton: UIButton {
         setTitle(title, for: .normal)
     }
 
-    func anchor(to view: UIView) {
+    func anchor(to view: UIView, at anchor: ActionButtonAnchor) {
         translatesAutoresizingMaskIntoConstraints = false
         centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -ActionButton.spacing).isActive = true
         widthAnchor.constraint(equalToConstant: ActionButton.side * 2).isActive = true
         heightAnchor.constraint(equalToConstant: ActionButton.side).isActive = true
+
+        if anchor == .top {
+            topAnchor.constraint(equalTo: view.topAnchor, constant: ActionButton.spacing).isActive = true
+        } else {
+            bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -ActionButton.spacing).isActive = true
+        }
     }
 
     override func draw(_ rect: CGRect) {

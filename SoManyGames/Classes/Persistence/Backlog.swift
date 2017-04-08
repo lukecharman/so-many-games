@@ -11,14 +11,34 @@ import RealmSwift
 
 struct Backlog {
 
-    let realm = try! Realm()
+    enum GameListType: String {
+        case active
+        case completed
+    }
 
-    var gameList: GameList {
-        if realm.objects(GameList.self).isEmpty {
-            try! realm.write { realm.add(GameList()) }
+    static let realm = try! Realm()
+
+    var gameList: GameList = Backlog.buildGameList(with: .active)
+    var completedGameList: GameList = Backlog.buildGameList(with: .completed)
+
+    var currentGameListType: GameListType = .active
+
+    static func buildGameList(with id: GameListType) -> GameList {
+        let predicate = "id == '\(id.rawValue)'"
+        if realm.objects(GameList.self).filter(predicate).isEmpty {
+            try! realm.write { realm.add(GameList(id: id.rawValue)) }
         }
-        guard let gameList = realm.objects(GameList.self).first else { fatalError() }
+        guard let gameList = realm.objects(GameList.self).filter("id == '\(id.rawValue)'").first else { fatalError() }
         return gameList
+    }
+
+    func list(forType type: GameListType) -> GameList {
+        switch type {
+        case .active:
+            return gameList
+        case .completed:
+            return completedGameList
+        }
     }
 
     var games: [Game] {
@@ -28,33 +48,48 @@ struct Backlog {
     func add(_ game: Game) {
         guard !exists(game) else { return }
 
-        try! realm.write {
-            realm.add(game)
+        try! Backlog.realm.write {
+            Backlog.realm.add(game)
             gameList.add(game)
         }
     }
 
     func remove(_ games: [Game]) {
-        try! realm.write {
+        try! Backlog.realm.write {
             gameList.remove(games)
-            realm.delete(games)
+            Backlog.realm.delete(games)
         }
     }
 
-    func move(_ from: Int, to: Int) {
-        try! realm.write {
+    func reorder(_ from: Int, to: Int) {
+        try! Backlog.realm.write {
             gameList.move(from, to: to)
         }
     }
 
+    func sort() {
+        try! Backlog.realm.write {
+            let games = list(forType: currentGameListType).list.sorted(by: { lhs, rhs in lhs.completionPercentage > rhs.completionPercentage })
+            list(forType: currentGameListType).list.removeAll()
+            list(forType: currentGameListType).list.append(contentsOf: games)
+        }
+    }
+
+    func move(_ game: Game, from: GameListType, to: GameListType) {
+        try! Backlog.realm.write {
+            list(forType: from).remove([game])
+            list(forType: to).add(game)
+        }
+    }
+
     func update(_ game: Game, with changes: () -> ()) {
-        try! realm.write {
+        try! Backlog.realm.write {
             changes()
         }
     }
 
     private func exists(_ game: Game) -> Bool {
-        let games = realm.objects(Game.self).filter("id == \(game.id)")
+        let games = Backlog.realm.objects(Game.self).filter("id == \(game.id)")
         return games.count > 0
     }
 
