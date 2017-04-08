@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol GameCellDelegate: class {
+    func game(_ game: Game, didUpdateProgress progress: Double)
+}
+
 class GameCell: UICollectionViewCell {
 
     static let height: CGFloat = 58
@@ -21,6 +25,8 @@ class GameCell: UICollectionViewCell {
 
     var longPressRecognizer: UILongPressGestureRecognizer!
     var panRecognizer: UIPanGestureRecognizer!
+
+    weak var delegate: GameCellDelegate?
 
     let long = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(recognizer:)))
     let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(recognizer:)))
@@ -150,7 +156,9 @@ class GameCell: UICollectionViewCell {
 
             layoutIfNeeded()
         } else if recognizer.state == .ended || recognizer.state == .cancelled {
-            Backlog().update(game) { game.completionPercentage = Double(ratio) }
+            let newRatio = Double(ratio)
+            Backlog().update(game) { game.completionPercentage = newRatio }
+            delegate?.game(game, didUpdateProgress: newRatio)
         }
     }
     

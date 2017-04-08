@@ -91,6 +91,12 @@ extension ListViewController {
         present(alert, animated: true, completion: nil)
     }
 
+    func markAsCompleted(game: Game) {
+        Backlog().remove([game])
+        games = Backlog().games
+        collectionView?.reloadData()
+    }
+
     func confirmDelete() {
         guard let cv = collectionView, let indexPaths = collectionView!.indexPathsForSelectedItems else {
             fatalError("You're trying to delete items that don't exist.")
@@ -155,6 +161,7 @@ extension ListViewController {
         }
 
         cell.game = games[indexPath.item]
+        cell.delegate = self
         
         return cell
     }
@@ -193,6 +200,25 @@ extension ListViewController {
         games[destinationIndexPath.item] = swap
 
         Backlog().move(sourceIndexPath.item, to: destinationIndexPath.item)
+    }
+
+}
+
+// MARK: GameCellDelegate
+
+extension ListViewController: GameCellDelegate {
+
+    func game(_ game: Game, didUpdateProgress progress: Double) {
+        if progress >= 1 {
+            askToDelete(game: game)
+        }
+    }
+
+    func askToDelete(game: Game) {
+        let alert = UIAlertController(title: "You're done?", message: "Want to move this game to your complete list?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in self.markAsCompleted(game: game) }))
+        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+        show(alert, sender: nil)
     }
 
 }
