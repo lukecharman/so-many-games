@@ -9,7 +9,9 @@
 import Foundation
 import RealmSwift
 
-struct Backlog {
+class Backlog {
+
+    static let manager = Backlog()
 
     enum GameListType: String {
         case active
@@ -41,8 +43,13 @@ struct Backlog {
         }
     }
 
+    func switchLists() {
+        currentGameListType = currentGameListType == .active ? .completed : .active
+        print(currentGameListType.rawValue)
+    }
+
     var games: [Game] {
-        return gameList.games().map { $0 }
+        return list(forType: currentGameListType).games().map { $0 }
     }
 
     func add(_ game: Game) {

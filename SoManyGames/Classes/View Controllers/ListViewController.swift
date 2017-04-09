@@ -10,9 +10,10 @@ import UIKit
 
 class ListViewController: UICollectionViewController {
 
-    var games: [Game] = Backlog().games
+    var games: [Game] = Backlog.manager.games
     var button = ActionButton(title: "+")
     var sortButton = ActionButton(title: "s")
+    var listButton = ActionButton(title: "l")
 
     var selectedGames = [Game]()
     var programmaticDeselection = false
@@ -34,12 +35,13 @@ extension ListViewController {
 
         makeAddButton()
         makeSortButton()
+        makeListButton()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        games = Backlog().games
+        games = Backlog.manager.games
         collectionView?.reloadData()
     }
 
@@ -55,7 +57,7 @@ extension ListViewController {
 
         superview.addSubview(button)
 
-        button.anchor(to: collectionView, at: .bottom)
+        button.anchor(to: collectionView, at: .bottomLeft)
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
 
@@ -65,8 +67,18 @@ extension ListViewController {
 
         superview.addSubview(sortButton)
 
-        sortButton.anchor(to: collectionView, at: .top)
+        sortButton.anchor(to: collectionView, at: .bottomRight)
         sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
+    }
+
+    func makeListButton() {
+        guard let collectionView = collectionView else { return }
+        guard let superview = collectionView.superview else { return }
+
+        superview.addSubview(listButton)
+
+        listButton.anchor(to: collectionView, at: .bottomCenter)
+        listButton.addTarget(self, action: #selector(listButtonTapped), for: .touchUpInside)
     }
 
     func buttonTapped() {
@@ -78,18 +90,24 @@ extension ListViewController {
     }
 
     func sortButtonTapped() {
-        Backlog().sort()
+        Backlog.manager.sort()
         collectionView?.performBatchUpdates({
             self.animateReorder()
         }, completion: { _ in
-            self.games = Backlog().games
+            self.games = Backlog.manager.games
             self.collectionView?.reloadData()
         })
     }
 
+    func listButtonTapped() {
+        Backlog.manager.switchLists()
+        games = Backlog.manager.games
+        collectionView?.reloadData()
+    }
+
     func animateReorder() {
         let old = self.games
-        let new = Backlog().games
+        let new = Backlog.manager.games
 
         for index in 0..<old.count {
             let fromIndexPath = IndexPath(item: index, section: 0)
@@ -125,11 +143,11 @@ extension ListViewController {
     }
 
     func markAsCompleted(game: Game) {
-        Backlog().move(game, from: .active, to: .completed)
-        games = Backlog().games
+        Backlog.manager.move(game, from: .active, to: .completed)
+        games = Backlog.manager.games
         collectionView?.reloadData()
-        print("Active: \(Backlog().gameList.games().count)")
-        print("Completed: \(Backlog().completedGameList.games().count)")
+        print("Active: \(Backlog.manager.gameList.games().count)")
+        print("Completed: \(Backlog.manager.completedGameList.games().count)")
     }
 
     func confirmDelete() {
@@ -141,8 +159,8 @@ extension ListViewController {
 
         cv.performBatchUpdates({
             cv.deleteItems(at: indexPaths)
-            Backlog().remove(self.selectedGames)
-            self.games = Backlog().games
+            Backlog.manager.remove(self.selectedGames)
+            self.games = Backlog.manager.games
             self.selectedGames = []
         }, completion: { success in
             cv.reloadData()
@@ -234,7 +252,7 @@ extension ListViewController {
         games[sourceIndexPath.item] = games[destinationIndexPath.item]
         games[destinationIndexPath.item] = swap
 
-        Backlog().reorder(sourceIndexPath.item, to: destinationIndexPath.item)
+        Backlog.manager.reorder(sourceIndexPath.item, to: destinationIndexPath.item)
     }
 
 }

@@ -157,7 +157,7 @@ class GameCell: UICollectionViewCell {
             layoutIfNeeded()
         } else if recognizer.state == .ended || recognizer.state == .cancelled {
             let newRatio = Double(ratio)
-            Backlog().update(game) { game.completionPercentage = newRatio }
+            Backlog.manager.update(game) { game.completionPercentage = newRatio }
             delegate?.game(game, didUpdateProgress: newRatio)
         }
     }

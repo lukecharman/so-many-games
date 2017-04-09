@@ -134,7 +134,7 @@ class SearchViewController: KeyboardObservableUIViewController {
     func getPlatform(for game: Game) {
         guard game.platforms.count > 1 else {
             game.activePlatform = game.platforms.first!
-            Backlog().add(game)
+            Backlog.manager.add(game)
             dismiss(animated: true, completion: nil)
             return
         }
@@ -147,7 +147,7 @@ class SearchViewController: KeyboardObservableUIViewController {
         for (i, platform) in platformsArray.enumerated() {
             alert.addAction(UIAlertAction(title: platform.name, style: .default, handler: { action in
                 game.activePlatform = platformsArray[i]
-                Backlog().add(game)
+                Backlog.manager.add(game)
                 self.dismiss(animated: true, completion: nil)
             }))
         }

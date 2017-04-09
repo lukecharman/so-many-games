@@ -11,8 +11,8 @@ import UIKit
 class ActionButton: UIButton {
 
     enum ActionButtonAnchor {
-        case top
-        case bottom
+        case topLeft, topCenter, topRight
+        case bottomLeft, bottomCenter, bottomRight
     }
 
     static let spacing: CGFloat = 16
@@ -25,14 +25,29 @@ class ActionButton: UIButton {
 
     func anchor(to view: UIView, at anchor: ActionButtonAnchor) {
         translatesAutoresizingMaskIntoConstraints = false
-        centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+
         widthAnchor.constraint(equalToConstant: ActionButton.side * 2).isActive = true
         heightAnchor.constraint(equalToConstant: ActionButton.side).isActive = true
 
-        if anchor == .top {
+        switch anchor {
+        case .topLeft:
             topAnchor.constraint(equalTo: view.topAnchor, constant: ActionButton.spacing).isActive = true
-        } else {
+            leftAnchor.constraint(equalTo: view.leftAnchor, constant: ActionButton.spacing).isActive = true
+        case .topCenter:
+            topAnchor.constraint(equalTo: view.topAnchor, constant: ActionButton.spacing).isActive = true
+            centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        case .topRight:
+            topAnchor.constraint(equalTo: view.topAnchor, constant: ActionButton.spacing).isActive = true
+            rightAnchor.constraint(equalTo: view.rightAnchor, constant: -ActionButton.spacing).isActive = true
+        case .bottomLeft:
             bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -ActionButton.spacing).isActive = true
+            leftAnchor.constraint(equalTo: view.leftAnchor, constant: ActionButton.spacing).isActive = true
+        case .bottomCenter:
+            bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -ActionButton.spacing).isActive = true
+            centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        case .bottomRight:
+            bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -ActionButton.spacing).isActive = true
+            rightAnchor.constraint(equalTo: view.rightAnchor, constant: -ActionButton.spacing).isActive = true
         }
     }
 
