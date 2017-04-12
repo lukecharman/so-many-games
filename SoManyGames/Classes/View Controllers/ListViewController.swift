@@ -10,13 +10,19 @@ import UIKit
 
 class ListViewController: UICollectionViewController {
 
-    var games: [Game] = Backlog.manager.games
+    var games: [Game] = Backlog.manager.games {
+        didSet {
+            updateEmptyStateLabel()
+        }
+    }
+
     var button = ActionButton(title: "+")
     var sortButton = ActionButton(title: "s")
-    var listButton = ActionButton(title: "l")
+    var listButton = ActionButton(title: "a")
 
     var selectedGames = [Game]()
     var programmaticDeselection = false
+    var emptyStateLabel = UILabel()
 
 }
 
@@ -36,6 +42,7 @@ extension ListViewController {
         makeAddButton()
         makeSortButton()
         makeListButton()
+        makeEmptyStateLabel()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -82,6 +89,8 @@ extension ListViewController {
     }
 
     func buttonTapped() {
+        guard Backlog.manager.currentGameListType == .active else { return }
+
         if button.title(for: .normal) == "+" {
             performSegue(withIdentifier: "AddGame", sender: nil)
         } else {
@@ -90,6 +99,8 @@ extension ListViewController {
     }
 
     func sortButtonTapped() {
+        guard Backlog.manager.currentGameListType == .active else { return }
+
         Backlog.manager.sort()
         collectionView?.performBatchUpdates({
             self.animateReorder()
@@ -103,6 +114,12 @@ extension ListViewController {
         Backlog.manager.switchLists()
         games = Backlog.manager.games
         collectionView?.reloadData()
+
+        let active = Backlog.manager.currentGameListType == .active
+        let title = active ? "a" : "c"
+        listButton.setTitle(title, for: .normal)
+        sortButton.isHidden = !active
+        button.isHidden = !active
     }
 
     func animateReorder() {
@@ -126,6 +143,36 @@ extension ListViewController {
         }
     }
 
+    func makeEmptyStateLabel() {
+        guard let collectionView = collectionView else { return }
+        guard let superview = collectionView.superview else { return }
+
+        superview.addSubview(button)
+
+        emptyStateLabel = UILabel()
+        emptyStateLabel.numberOfLines = 0
+        emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
+        emptyStateLabel.font = UIFont(name: "RPGSystem", size: 40)
+        emptyStateLabel.textColor = Colors.darkest
+
+        superview.addSubview(emptyStateLabel)
+
+        emptyStateLabel.centerXAnchor.constraint(equalTo: superview.centerXAnchor).isActive = true
+        emptyStateLabel.centerYAnchor.constraint(equalTo: superview.centerYAnchor, constant: -41).isActive = true
+        emptyStateLabel.widthAnchor.constraint(equalTo: superview.widthAnchor, multiplier: 0.9).isActive = true
+    }
+
+    func updateEmptyStateLabel() {
+        emptyStateLabel.isHidden = games.count > 0
+
+        let active = Backlog.manager.currentGameListType == .active
+        if active {
+            emptyStateLabel.text = "Looks like your backlog is empty. Lucky you!\n\nIf you have games to add, tap the add button."
+        } else {
+            emptyStateLabel.text = "Looks like your completed games list is empty.\n\nWhen you mark a game as 100% complete, it'll show up here."
+        }
+    }
+
 }
 
 // MARK:- Deletion
@@ -146,8 +193,12 @@ extension ListViewController {
         Backlog.manager.move(game, from: .active, to: .completed)
         games = Backlog.manager.games
         collectionView?.reloadData()
-        print("Active: \(Backlog.manager.gameList.games().count)")
-        print("Completed: \(Backlog.manager.completedGameList.games().count)")
+    }
+
+    func markAsUncompleted(game: Game) {
+        Backlog.manager.move(game, from: .completed, to: .active)
+        games = Backlog.manager.games
+        collectionView?.reloadData()
     }
 
     func confirmDelete() {
@@ -262,14 +313,25 @@ extension ListViewController {
 extension ListViewController: GameCellDelegate {
 
     func game(_ game: Game, didUpdateProgress progress: Double) {
-        if progress >= 1 {
+        if progress >= 1 && Backlog.manager.currentGameListType == .active {
             askToDelete(game: game)
+        } else if progress < 1 && Backlog.manager.currentGameListType == .completed {
+            askToMoveBack(game: game)
         }
     }
 
     func askToDelete(game: Game) {
+        guard Backlog.manager.currentGameListType == .active else { return }
         let alert = UIAlertController(title: "You're done?", message: "Want to move this game to your complete list?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in self.markAsCompleted(game: game) }))
+        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+        show(alert, sender: nil)
+    }
+
+    func askToMoveBack(game: Game) {
+        guard Backlog.manager.currentGameListType == .completed else { return }
+        let alert = UIAlertController(title: "Back into it?", message: "Want to move this game back to your active list?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in self.markAsUncompleted(game: game) }))
         alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
         show(alert, sender: nil)
     }

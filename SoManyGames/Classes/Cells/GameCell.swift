@@ -103,7 +103,7 @@ class GameCell: UICollectionViewCell {
         guard let game = game else { return }
 
         UIView.animate(withDuration: 0.3) { 
-            self.backgroundColor = self.isSelected ? UIColor(white: 0, alpha: 0.2) : .clear
+            self.backgroundColor = self.isSelected ? Colors.darkest.withAlphaComponent(0.2) : .clear
 
             if self.isSelected {
                 self.progressBar.alpha = 0

@@ -45,7 +45,6 @@ class Backlog {
 
     func switchLists() {
         currentGameListType = currentGameListType == .active ? .completed : .active
-        print(currentGameListType.rawValue)
     }
 
     var games: [Game] {

@@ -140,7 +140,7 @@ class SearchViewController: KeyboardObservableUIViewController {
         }
 
         let alert = UIAlertController(title: "Which Platform?", message: nil, preferredStyle: .actionSheet)
-        alert.view.tintColor = UIColor(red:0.19, green:0.38, blue:0.19, alpha:1.0)
+        alert.view.tintColor = Colors.dark
 
         let platformsArray = Array(game.platforms)
 

@@ -52,13 +52,13 @@ class ActionButton: UIButton {
     }
 
     override func draw(_ rect: CGRect) {
-        setTitleColor(UIColor(red:0.06, green:0.22, blue:0.06, alpha:1.0), for: .normal)
+        setTitleColor(Colors.darkest, for: .normal)
         setBackgroundImage(UIImage(named: "Button"), for: .normal)
 
         titleLabel?.font = UIFont(name: "RPGSystem", size: 60)
 
         layer.masksToBounds = true
-        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowColor = Colors.darkest.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 2)
         layer.shadowRadius = 2
         layer.shadowOpacity = 0.6
