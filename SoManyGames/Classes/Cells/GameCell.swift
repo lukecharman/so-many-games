@@ -14,7 +14,7 @@ protocol GameCellDelegate: class {
 
 class GameCell: UICollectionViewCell {
 
-    static let height: CGFloat = 58
+    static let height: CGFloat = iPad ? 90 : 60
     static let swipeMultiplier: CGFloat = 1.7
 
     @IBOutlet var label: UILabel!
@@ -56,6 +56,11 @@ class GameCell: UICollectionViewCell {
 
         progressBar.isUserInteractionEnabled = false
         progressBar.translatesAutoresizingMaskIntoConstraints = false
+
+        platformLabel.font = platformLabel.font.withSize(Sizes.gameCellSub)
+        percentageLabel.font = percentageLabel.font.withSize(Sizes.gameCellSub)
+        label.font = label.font.withSize(Sizes.gameCellMain)
+        label.numberOfLines = iPad ? 3 : 2
     }
 
     func setUpRecognizers() {
@@ -71,6 +76,15 @@ class GameCell: UICollectionViewCell {
 
     func calculateProgress(from ratio: Double) {
         let size = bounds.size.width * CGFloat(ratio)
+        progressView.constant = size
+        progressBar.alpha = CGFloat(ratio)
+        percentageLabel.text = String(describing: Int(ratio * 100)) + "%"
+        layoutIfNeeded()
+    }
+
+    func calculateProgressOnRotation() {
+        let ratio = game!.completionPercentage
+        let size = (UIScreen.main.bounds.size.height / 2) * CGFloat(ratio)
         progressView.constant = size
         progressBar.alpha = CGFloat(ratio)
         percentageLabel.text = String(describing: Int(ratio * 100)) + "%"
@@ -144,6 +158,7 @@ class GameCell: UICollectionViewCell {
 
     func handlePan(recognizer: UIPanGestureRecognizer) {
         guard let game = game else { return }
+        guard !isSelected else { return }
 
         let originalValue = CGFloat(game.completionPercentage) * bounds.size.width
         let t = max((recognizer.translation(in: self).x * GameCell.swipeMultiplier) + originalValue, 0)

@@ -164,55 +164,57 @@
                                     <outlet property="delegate" destination="E88-um-BJP" id="p51-qt-7oC"/>
                                 </connections>
                             </collectionView>
-                            <view alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LH7-FX-SGx">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LH7-FX-SGx">
                                 <rect key="frame" x="0.0" y="583" width="375" height="84"/>
-                                <color key="backgroundColor" red="0.058823529409999999" green="0.21960784310000001" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gsR-LY-8NN">
+                                        <rect key="frame" x="136" y="16" width="223" height="52"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="tintColor" red="0.60784313729999995" green="0.73725490199999999" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.60784313729999995" green="0.73725490199999999" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="RPGSystem" family="RPGSystem" pointSize="28"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" keyboardAppearance="alert" returnKeyType="search"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="E88-um-BJP" id="EkJ-fH-1qX"/>
+                                        </connections>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3KB-nx-e8c" customClass="ActionButton" customModule="SoManyGames" customModuleProvider="target">
+                                        <rect key="frame" x="16" y="16" width="104" height="52"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="52" id="Sp7-Hb-mqc"/>
+                                            <constraint firstAttribute="width" secondItem="3KB-nx-e8c" secondAttribute="height" multiplier="2:1" id="g71-uy-QHj"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="RPGSystem" family="RPGSystem" pointSize="60"/>
+                                        <state key="normal" title="&lt;" backgroundImage="Button">
+                                            <color key="titleColor" red="0.058823529409999999" green="0.21960784310000001" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cancel:" destination="E88-um-BJP" eventType="touchUpInside" id="0za-u1-Tkv"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.058823529409999999" green="0.21960784310000001" blue="0.058823529409999999" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="gsR-LY-8NN" secondAttribute="trailing" constant="16" id="4hY-Za-xfH"/>
+                                    <constraint firstItem="3KB-nx-e8c" firstAttribute="leading" secondItem="LH7-FX-SGx" secondAttribute="leading" constant="16" id="A64-7H-aDT"/>
                                     <constraint firstAttribute="height" constant="84" id="DG2-x9-307"/>
+                                    <constraint firstItem="gsR-LY-8NN" firstAttribute="leading" secondItem="3KB-nx-e8c" secondAttribute="trailing" constant="16" id="Pf9-ml-zbR"/>
+                                    <constraint firstItem="3KB-nx-e8c" firstAttribute="centerY" secondItem="LH7-FX-SGx" secondAttribute="centerY" id="TQw-s0-PRG"/>
+                                    <constraint firstItem="gsR-LY-8NN" firstAttribute="height" secondItem="3KB-nx-e8c" secondAttribute="height" id="axO-vf-XIc"/>
+                                    <constraint firstItem="gsR-LY-8NN" firstAttribute="centerY" secondItem="LH7-FX-SGx" secondAttribute="centerY" id="gsB-mz-6Qs"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3KB-nx-e8c" customClass="ActionButton" customModule="SoManyGames" customModuleProvider="target">
-                                <rect key="frame" x="16" y="599" width="104" height="52"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="104" id="7sf-ia-ZgQ"/>
-                                    <constraint firstAttribute="height" constant="52" id="Sp7-Hb-mqc"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="RPGSystem" family="RPGSystem" pointSize="60"/>
-                                <state key="normal" title="&lt;" backgroundImage="Button">
-                                    <color key="titleColor" red="0.058823529409999999" green="0.21960784310000001" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="cancel:" destination="E88-um-BJP" eventType="touchUpInside" id="0za-u1-Tkv"/>
-                                </connections>
-                            </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gsR-LY-8NN">
-                                <rect key="frame" x="120" y="599" width="239" height="52"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <color key="tintColor" red="0.60784313729999995" green="0.73725490199999999" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="textColor" red="0.60784313729999995" green="0.73725490199999999" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" name="RPGSystem" family="RPGSystem" pointSize="28"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" keyboardAppearance="alert" returnKeyType="search"/>
-                                <connections>
-                                    <outlet property="delegate" destination="E88-um-BJP" id="EkJ-fH-1qX"/>
-                                </connections>
-                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="gsR-LY-8NN" secondAttribute="trailing" constant="16" id="0st-cm-VU9"/>
                             <constraint firstItem="LH7-FX-SGx" firstAttribute="leading" secondItem="5W1-mh-Gdl" secondAttribute="leading" id="8JX-KG-wCu"/>
-                            <constraint firstItem="gsR-LY-8NN" firstAttribute="bottom" secondItem="3KB-nx-e8c" secondAttribute="bottom" id="Eaf-Wu-1UA"/>
-                            <constraint firstItem="3KB-nx-e8c" firstAttribute="leading" secondItem="5W1-mh-Gdl" secondAttribute="leading" constant="16" id="IME-1a-KRz"/>
-                            <constraint firstItem="gsR-LY-8NN" firstAttribute="leading" secondItem="3KB-nx-e8c" secondAttribute="trailing" id="PAf-Li-Bft"/>
                             <constraint firstItem="n2h-tF-R2R" firstAttribute="leading" secondItem="5W1-mh-Gdl" secondAttribute="leading" id="PS0-qz-KiP"/>
                             <constraint firstItem="n2h-tF-R2R" firstAttribute="top" secondItem="jy4-uA-HuE" secondAttribute="bottom" id="SKr-RO-hnV"/>
                             <constraint firstAttribute="trailing" secondItem="LH7-FX-SGx" secondAttribute="trailing" id="ZvP-ux-XBz"/>
-                            <constraint firstItem="gsR-LY-8NN" firstAttribute="top" secondItem="3KB-nx-e8c" secondAttribute="top" id="kD3-9F-BRe"/>
+                            <constraint firstItem="nMy-0c-yUw" firstAttribute="top" secondItem="LH7-FX-SGx" secondAttribute="bottom" id="o5J-KO-8C6"/>
                             <constraint firstItem="nMy-0c-yUw" firstAttribute="top" secondItem="n2h-tF-R2R" secondAttribute="bottom" id="ocx-B4-XLt"/>
-                            <constraint firstItem="3KB-nx-e8c" firstAttribute="top" secondItem="LH7-FX-SGx" secondAttribute="bottom" constant="-68" id="rmL-cb-jRM"/>
                             <constraint firstAttribute="trailing" secondItem="n2h-tF-R2R" secondAttribute="trailing" id="uyN-qg-5iA"/>
-                            <constraint firstItem="nMy-0c-yUw" firstAttribute="top" secondItem="3KB-nx-e8c" secondAttribute="bottom" constant="16" id="z3D-CV-z7l"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="O5V-2f-pG9">
@@ -226,7 +228,9 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="bottomBar" destination="LH7-FX-SGx" id="dXd-PK-BpT"/>
-                        <outlet property="buttonBottomConstraint" destination="z3D-CV-z7l" id="9gh-NG-rzb"/>
+                        <outlet property="bottomBarBottomConstraint" destination="o5J-KO-8C6" id="u0t-au-TEt"/>
+                        <outlet property="bottomBarHeightConstraint" destination="DG2-x9-307" id="dhW-94-AdJ"/>
+                        <outlet property="buttonHeightConstraint" destination="Sp7-Hb-mqc" id="xPi-Yd-z6c"/>
                         <outlet property="cancelButton" destination="3KB-nx-e8c" id="drI-Jw-7c3"/>
                         <outlet property="collectionView" destination="n2h-tF-R2R" id="arv-BY-NDM"/>
                         <outlet property="textField" destination="gsR-LY-8NN" id="YfB-gb-uRy"/>

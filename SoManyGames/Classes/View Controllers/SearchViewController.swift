@@ -13,8 +13,10 @@ class SearchViewController: KeyboardObservableUIViewController {
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var textField: UITextField!
     @IBOutlet var cancelButton: ActionButton!
-    @IBOutlet var buttonBottomConstraint: NSLayoutConstraint!
     @IBOutlet var bottomBar: UIView!
+    @IBOutlet var bottomBarHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var buttonHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var bottomBarBottomConstraint: NSLayoutConstraint!
 
     let api = GiantBomb()
 
@@ -35,6 +37,12 @@ class SearchViewController: KeyboardObservableUIViewController {
         view.bringSubview(toFront: bottomBar)
         view.bringSubview(toFront: cancelButton)
         view.bringSubview(toFront: textField)
+
+        bottomBarHeightConstraint.constant = iPad ? 104 : 84
+        buttonHeightConstraint.constant = Sizes.button
+        view.setNeedsLayout()
+
+        textField.font = textField.font?.withSize(Sizes.emptyState)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -124,7 +132,7 @@ class SearchViewController: KeyboardObservableUIViewController {
 
     override func keyboardWillMove(to rect: CGRect, over duration: TimeInterval) {
         let closing = rect.origin.y == collectionView.frame.size.height
-        buttonBottomConstraint.constant = closing ? ActionButton.spacing : rect.size.height + ActionButton.spacing
+        bottomBarBottomConstraint.constant = closing ? 0 : rect.size.height
         UIView.animateKeyframes(withDuration: duration, delay: 0, options: .calculationModeCubic, animations: { 
             self.view.layoutIfNeeded()
         }, completion: nil)
@@ -138,7 +146,8 @@ class SearchViewController: KeyboardObservableUIViewController {
             return
         }
 
-        let alert = UIAlertController(title: "Which Platform?", message: nil, preferredStyle: .actionSheet)
+        let style: UIAlertControllerStyle = UIDevice.current.userInterfaceIdiom == .pad ? .alert : .actionSheet
+        let alert = UIAlertController(title: "Which Platform?", message: nil, preferredStyle: style)
         alert.view.tintColor = Colors.dark
 
         let platformsArray = Array(game.platforms)

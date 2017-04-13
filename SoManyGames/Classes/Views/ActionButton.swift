@@ -16,7 +16,7 @@ class ActionButton: UIButton {
     }
 
     static let spacing: CGFloat = 16
-    static let side: CGFloat = 52
+    static let side: CGFloat = iPad ? 60 : 44
 
     convenience init(title: String) {
         self.init()
@@ -55,7 +55,7 @@ class ActionButton: UIButton {
         setTitleColor(Colors.darkest, for: .normal)
         setBackgroundImage(UIImage(named: "Button"), for: .normal)
 
-        titleLabel?.font = UIFont(name: "RPGSystem", size: 60)
+        titleLabel?.font = UIFont(name: "RPGSystem", size: Sizes.button)
 
         layer.masksToBounds = true
         layer.shadowColor = Colors.darkest.cgColor

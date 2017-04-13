@@ -36,7 +36,7 @@ extension ListViewController {
         collectionView?.allowsMultipleSelection = true
         collectionView?.backgroundColor = .clear
 
-        button.titleLabel?.font = UIFont(name: "RPGSystem", size: 70)
+        button.titleLabel?.font = UIFont(name: "RPGSystem", size: Sizes.button)
 
         makeAddButton()
         makeSortButton()
@@ -50,6 +50,15 @@ extension ListViewController {
 
         games = Backlog.manager.games
         collectionView?.reloadData()
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        collectionView?.collectionViewLayout.invalidateLayout()
+        for cell in collectionView!.visibleCells {
+            guard let cell = cell as? GameCell else { continue }
+            cell.calculateProgressOnRotation()
+        }
     }
 
 }
@@ -135,10 +144,8 @@ extension ListViewController {
     func updateButton() {
         if selectedGames.count > 0 {
             button.setTitle("X", for: .normal)
-            button.titleLabel?.font = UIFont(name: "RPGSystem", size: 60)
         } else {
             button.setTitle("+", for: .normal)
-            button.titleLabel?.font = UIFont(name: "RPGSystem", size: 70)
         }
     }
 
@@ -151,7 +158,7 @@ extension ListViewController {
         emptyStateLabel = UILabel()
         emptyStateLabel.numberOfLines = 0
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
-        emptyStateLabel.font = UIFont(name: "RPGSystem", size: 40)
+        emptyStateLabel.font = UIFont(name: "RPGSystem", size: Sizes.emptyState)
         emptyStateLabel.textColor = Colors.darkest
 
         superview.addSubview(emptyStateLabel)
@@ -279,7 +286,11 @@ extension ListViewController {
 extension ListViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.size.width, height: GameCell.height)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return CGSize(width: collectionView.bounds.size.width / 2, height: GameCell.height)
+        } else {
+            return CGSize(width: collectionView.bounds.size.width, height: GameCell.height)
+        }
     }
 
 }
