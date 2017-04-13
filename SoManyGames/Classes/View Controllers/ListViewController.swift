@@ -24,26 +24,15 @@ class ListViewController: UICollectionViewController {
     var programmaticDeselection = false
     var emptyStateLabel = UILabel()
 
-    var gradients: RetroGradients?
-
 }
 
 // MARK: Setup
 
 extension ListViewController {
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate(alongsideTransition: { _ in
-            self.gradients?.horizontal.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-            self.gradients?.vertical.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        }, completion: nil)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        gradients = collectionView?.superview?.makeGradients()
         collectionView?.allowsMultipleSelection = true
         collectionView?.backgroundColor = .clear
 
