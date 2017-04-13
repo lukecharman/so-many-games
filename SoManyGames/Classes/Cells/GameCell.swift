@@ -166,7 +166,7 @@ class GameCell: UICollectionViewCell {
 
         if recognizer.state == .changed {
             progressView.constant = t
-            progressBar.alpha = ratio
+            progressBar.alpha = ratio * 1.3
             percentageLabel.text = "\(String(describing: Int(ratio * 100)))%"
 
             layoutIfNeeded()

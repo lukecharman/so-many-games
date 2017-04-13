@@ -286,11 +286,15 @@ extension ListViewController {
 extension ListViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if traitCollection.horizontalSizeClass == .regular {
             return CGSize(width: collectionView.bounds.size.width / 2, height: GameCell.height)
         } else {
             return CGSize(width: collectionView.bounds.size.width, height: GameCell.height)
         }
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        collectionView?.collectionViewLayout.invalidateLayout()
     }
 
 }

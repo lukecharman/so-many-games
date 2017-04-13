@@ -63,8 +63,6 @@ class ActionButton: UIButton {
         layer.shadowRadius = 2
         layer.shadowOpacity = 0.6
 
-        addMotion()
-
         super.draw(rect)
     }
 

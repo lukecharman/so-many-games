@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8324A2781E8FD26E00672438 /* UIView+MotionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8324A2771E8FD26E00672438 /* UIView+MotionHelper.swift */; };
 		8324A27E1E90337D00672438 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8324A27D1E90337D00672438 /* APIClient.swift */; };
 		8324A2841E90341600672438 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8324A2801E90341600672438 /* Assets.xcassets */; };
 		8324A2851E90341600672438 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8324A2811E90341600672438 /* Main.storyboard */; };
@@ -51,7 +50,6 @@
 /* Begin PBXFileReference section */
 		28ECC5FD6DB5F275B213DAA5 /* Pods_SoManyGames.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SoManyGames.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		29CFE0C8E52E552CBA4F701C /* Pods-SoManyGames.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SoManyGames.release.xcconfig"; path = "Pods/Target Support Files/Pods-SoManyGames/Pods-SoManyGames.release.xcconfig"; sourceTree = "<group>"; };
-		8324A2771E8FD26E00672438 /* UIView+MotionHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+MotionHelper.swift"; sourceTree = "<group>"; };
 		8324A27D1E90337D00672438 /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		8324A2801E90341600672438 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8324A2821E90341600672438 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -189,7 +187,6 @@
 			children = (
 				83FFCC141E86D96B00E49C22 /* AppDelegate.swift */,
 				832DAE611E8D5657001E6BB6 /* KeyboardObservable.swift */,
-				8324A2771E8FD26E00672438 /* UIView+MotionHelper.swift */,
 				8324A2871E9038CB00672438 /* UIView+Gradients.swift */,
 				83B8C44C1E9E956500F25CC7 /* Theme.swift */,
 				83FFCC121E86D96B00E49C22 /* API */,
@@ -459,7 +456,6 @@
 				83FFCC261E86D96B00E49C22 /* GiantBomb.swift in Sources */,
 				83FFCC2D1E86D96B00E49C22 /* GameList.swift in Sources */,
 				8366A9531E8D1A9A002868D9 /* ActionButton.swift in Sources */,
-				8324A2781E8FD26E00672438 /* UIView+MotionHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -603,7 +599,6 @@
 			baseConfigurationReference = DAE5C5FD9BAB0E7C796B8FD5 /* Pods-SoManyGames.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEVELOPMENT_TEAM = DKUXY47LSM;
 				INFOPLIST_FILE = SoManyGames/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
@@ -620,7 +615,6 @@
 			baseConfigurationReference = 29CFE0C8E52E552CBA4F701C /* Pods-SoManyGames.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEVELOPMENT_TEAM = DKUXY47LSM;
 				INFOPLIST_FILE = SoManyGames/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
