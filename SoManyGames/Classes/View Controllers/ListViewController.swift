@@ -16,9 +16,9 @@ class ListViewController: UICollectionViewController {
         }
     }
 
-    var button = ActionButton(title: "+")
-    var sortButton = ActionButton(title: "s")
-    var listButton = ActionButton(title: "a")
+    var button = ActionButton(title: "add")
+    var sortButton = ActionButton(title: "sort")
+    var listButton = ActionButton(title: "playing")
 
     var selectedGames = [Game]()
     var programmaticDeselection = false
@@ -100,7 +100,7 @@ extension ListViewController {
     func buttonTapped() {
         guard Backlog.manager.currentGameListType == .active else { return }
 
-        if button.title(for: .normal) == "+" {
+        if button.title(for: .normal) == "add" {
             performSegue(withIdentifier: "AddGame", sender: nil)
         } else {
             delete()
@@ -125,7 +125,7 @@ extension ListViewController {
         collectionView?.reloadData()
 
         let active = Backlog.manager.currentGameListType == .active
-        let title = active ? "a" : "c"
+        let title = active ? "playing" : "finished"
         listButton.setTitle(title, for: .normal)
         button.isHidden = !active
     }
@@ -143,9 +143,9 @@ extension ListViewController {
 
     func updateButton() {
         if selectedGames.count > 0 {
-            button.setTitle("X", for: .normal)
+            button.setTitle("delete", for: .normal)
         } else {
-            button.setTitle("+", for: .normal)
+            button.setTitle("add", for: .normal)
         }
     }
 

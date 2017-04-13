@@ -38,8 +38,8 @@ class SearchViewController: KeyboardObservableUIViewController {
         view.bringSubview(toFront: cancelButton)
         view.bringSubview(toFront: textField)
 
-        bottomBarHeightConstraint.constant = iPad ? 104 : 84
-        buttonHeightConstraint.constant = Sizes.button
+        bottomBarHeightConstraint.constant = iPad ? 92 : 76
+        buttonHeightConstraint.constant = 44
         view.setNeedsLayout()
 
         textField.font = textField.font?.withSize(Sizes.emptyState)

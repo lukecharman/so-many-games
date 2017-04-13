@@ -18,7 +18,7 @@ struct Colors {
 }
 
 struct Sizes {
-    static let button: CGFloat = iPad ? 70 : 40
+    static let button: CGFloat = iPad ? 34 : 20
     static let emptyState: CGFloat = iPad ? 50 : 30
     static let gameCellMain: CGFloat = iPad ? 32 : 28
     static let gameCellSub: CGFloat = iPad ? 28 : 20
