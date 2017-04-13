@@ -57,11 +57,10 @@ class ActionButton: UIButton {
 
         titleLabel?.font = UIFont(name: "RPGSystem", size: Sizes.button)
 
-        layer.masksToBounds = true
         layer.shadowColor = Colors.darkest.cgColor
-        layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 2
-        layer.shadowOpacity = 0.6
+        layer.shadowOffset = CGSize(width: 0, height: 4)
+        layer.shadowRadius = 6
+        layer.shadowOpacity = 0.5
 
         super.draw(rect)
     }

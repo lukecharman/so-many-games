@@ -34,6 +34,7 @@ class SearchViewController: KeyboardObservableUIViewController {
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 84, right: 0)
         view.backgroundColor = .clear
 
+        view.makeGradients()
         view.bringSubview(toFront: bottomBar)
         view.bringSubview(toFront: cancelButton)
         view.bringSubview(toFront: textField)

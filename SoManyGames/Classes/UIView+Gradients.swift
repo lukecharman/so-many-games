@@ -11,30 +11,19 @@ import UIKit
 extension UIView {
 
     func makeGradients() {
+        let verticalLayer = CAGradientLayer()
+        verticalLayer.frame = bounds
+        verticalLayer.colors = [UIColor.black.withAlphaComponent(0.3).cgColor, UIColor.clear.cgColor]
+        verticalLayer.startPoint = CGPoint(x: 0, y: 1)
+        verticalLayer.endPoint = CGPoint(x: 0, y: 0)
+        layer.addSublayer(verticalLayer)
+
         let horizontalLayer = CAGradientLayer()
-        horizontalLayer.frame = rotationSafeFrame()
-        horizontalLayer.colors = [UIColor.black.withAlphaComponent(0.1).cgColor, UIColor.clear.cgColor, UIColor.black.withAlphaComponent(0.25).cgColor]
+        horizontalLayer.frame = bounds
+        horizontalLayer.colors = [UIColor.black.withAlphaComponent(0.2).cgColor, UIColor.clear.cgColor, UIColor.black.withAlphaComponent(0.2).cgColor]
         horizontalLayer.startPoint = CGPoint(x: 0, y: 0)
         horizontalLayer.endPoint = CGPoint(x: 1, y: 0)
-        horizontalLayer.anchorPoint = center
         layer.addSublayer(horizontalLayer)
-
-        let verticalLayer = CAGradientLayer()
-        verticalLayer.frame = rotationSafeFrame()
-        verticalLayer.colors = [UIColor.black.withAlphaComponent(0.2).cgColor, UIColor.clear.cgColor]
-        verticalLayer.startPoint = CGPoint(x: 0, y: 0)
-        verticalLayer.endPoint = CGPoint(x: 0, y: 1)
-        verticalLayer.anchorPoint = center
-        layer.addSublayer(verticalLayer)
-    }
-
-    private func rotationSafeFrame() -> CGRect {
-        let x: CGFloat = -1000
-        let y: CGFloat = -1000
-        let w = frame.size.width + 2000
-        let h = frame.size.height + 2000
-
-        return CGRect(x: x, y: y, width: w, height: h)
     }
 
 }

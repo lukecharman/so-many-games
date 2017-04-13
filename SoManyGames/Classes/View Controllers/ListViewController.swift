@@ -33,6 +33,7 @@ extension ListViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        collectionView?.superview?.makeGradients()
         collectionView?.allowsMultipleSelection = true
         collectionView?.backgroundColor = .clear
 
