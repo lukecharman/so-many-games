@@ -24,16 +24,26 @@ class ListViewController: UICollectionViewController {
     var programmaticDeselection = false
     var emptyStateLabel = UILabel()
 
+    var gradients: RetroGradients?
+
 }
 
 // MARK: Setup
 
 extension ListViewController {
 
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { _ in
+            self.gradients?.horizontal.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+            self.gradients?.vertical.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        }, completion: nil)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        collectionView?.superview?.makeGradients()
+        gradients = collectionView?.superview?.makeGradients()
         collectionView?.allowsMultipleSelection = true
         collectionView?.backgroundColor = .clear
 
@@ -43,6 +53,7 @@ extension ListViewController {
         makeSortButton()
         makeListButton()
         makeEmptyStateLabel()
+        updateEmptyStateLabel()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -118,7 +129,6 @@ extension ListViewController {
         let active = Backlog.manager.currentGameListType == .active
         let title = active ? "a" : "c"
         listButton.setTitle(title, for: .normal)
-        sortButton.isHidden = !active
         button.isHidden = !active
     }
 
@@ -168,8 +178,11 @@ extension ListViewController {
         let active = Backlog.manager.currentGameListType == .active
         if active {
             emptyStateLabel.text = "Looks like your backlog is empty. Lucky you!\n\nIf you have games to add, tap the add button."
-        } else {
+            sortButton.isHidden = !emptyStateLabel.isHidden
+        }   else {
             emptyStateLabel.text = "Looks like your completed games list is empty.\n\nWhen you mark a game as 100% complete, it'll show up here."
+            sortButton.isHidden = true
+            return
         }
     }
 
