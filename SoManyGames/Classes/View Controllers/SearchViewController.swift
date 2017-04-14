@@ -17,6 +17,7 @@ class SearchViewController: KeyboardObservableUIViewController {
     @IBOutlet var bottomBarHeightConstraint: NSLayoutConstraint!
     @IBOutlet var buttonHeightConstraint: NSLayoutConstraint!
     @IBOutlet var bottomBarBottomConstraint: NSLayoutConstraint!
+    @IBOutlet var gradientView: GradientView!
 
     let api = GiantBomb()
 
@@ -34,7 +35,6 @@ class SearchViewController: KeyboardObservableUIViewController {
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 84, right: 0)
         view.backgroundColor = .clear
 
-        view.makeGradients()
         view.bringSubview(toFront: bottomBar)
         view.bringSubview(toFront: cancelButton)
         view.bringSubview(toFront: textField)
@@ -49,6 +49,14 @@ class SearchViewController: KeyboardObservableUIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         textField.becomeFirstResponder()
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        coordinator.animate(alongsideTransition: { _ in
+            self.gradientView.resize()
+        }, completion: nil)
     }
 
     @IBAction func cancel(_ sender: UIButton) {

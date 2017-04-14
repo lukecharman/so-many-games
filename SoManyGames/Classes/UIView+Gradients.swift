@@ -8,22 +8,42 @@
 
 import UIKit
 
-extension UIView {
+@IBDesignable
+class GradientView: UIView {
 
-    func makeGradients() {
-        let verticalLayer = CAGradientLayer()
-        verticalLayer.frame = bounds
-        verticalLayer.colors = [UIColor.black.withAlphaComponent(0.3).cgColor, UIColor.clear.cgColor]
-        verticalLayer.startPoint = CGPoint(x: 0, y: 1)
-        verticalLayer.endPoint = CGPoint(x: 0, y: 0)
-        layer.addSublayer(verticalLayer)
+    private let h = CAGradientLayer()
+    private let v = CAGradientLayer()
 
-        let horizontalLayer = CAGradientLayer()
-        horizontalLayer.frame = bounds
-        horizontalLayer.colors = [UIColor.black.withAlphaComponent(0.2).cgColor, UIColor.clear.cgColor, UIColor.black.withAlphaComponent(0.2).cgColor]
-        horizontalLayer.startPoint = CGPoint(x: 0, y: 0)
-        horizontalLayer.endPoint = CGPoint(x: 1, y: 0)
-        layer.addSublayer(horizontalLayer)
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+
+        isOpaque = false
+        backgroundColor = .clear
+        isUserInteractionEnabled = false
+
+        setUpGradients()
+    }
+
+    func resize() {
+        h.frame = bounds
+        v.frame = bounds
+    }
+
+    private func setUpGradients() {
+        h.frame = bounds
+        v.frame = bounds
+
+        h.colors = [UIColor.black.withAlphaComponent(0.2).cgColor, UIColor.clear.cgColor, UIColor.black.withAlphaComponent(0.2).cgColor]
+        v.colors = [UIColor.black.withAlphaComponent(0.3).cgColor, UIColor.clear.cgColor]
+
+        h.startPoint = CGPoint(x: 0, y: 0)
+        h.endPoint = CGPoint(x: 1, y: 0)
+
+        v.startPoint = CGPoint(x: 0, y: 1)
+        v.endPoint = CGPoint(x: 0, y: 0)
+
+        layer.addSublayer(h)
+        layer.addSublayer(v)
     }
 
 }

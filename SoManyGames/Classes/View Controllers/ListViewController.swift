@@ -10,6 +10,8 @@ import UIKit
 
 class ListViewController: UICollectionViewController {
 
+    @IBOutlet var gradientView: GradientView!
+
     var games: [Game] = Backlog.manager.games {
         didSet {
             updateEmptyStateLabel()
@@ -33,7 +35,6 @@ extension ListViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        collectionView?.superview?.makeGradients()
         collectionView?.allowsMultipleSelection = true
         collectionView?.backgroundColor = .clear
 
@@ -55,11 +56,16 @@ extension ListViewController {
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
+
         collectionView?.collectionViewLayout.invalidateLayout()
         for cell in collectionView!.visibleCells {
             guard let cell = cell as? GameCell else { continue }
             cell.calculateProgressOnRotation()
         }
+
+        coordinator.animate(alongsideTransition: { _ in
+            self.gradientView.resize()
+        }, completion: nil)
     }
 
 }

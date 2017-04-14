@@ -29,6 +29,11 @@
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                             <inset key="sectionInset" minX="0.0" minY="20" maxX="0.0" maxY="84"/>
                         </collectionViewFlowLayout>
+                        <view key="backgroundView" opaque="NO" contentMode="scaleToFill" id="mK9-ao-yr6" customClass="GradientView" customModule="SoManyGames" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GameCell" id="0W4-9V-8NN" customClass="GameCell" customModule="SoManyGames" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="20" width="320" height="58"/>
@@ -46,7 +51,7 @@
                                             </constraints>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CTv-e6-YSC">
-                                            <rect key="frame" x="62" y="0.0" width="255" height="58"/>
+                                            <rect key="frame" x="62" y="0.0" width="200" height="58"/>
                                             <fontDescription key="fontDescription" name="RPGSystem" family="RPGSystem" pointSize="28"/>
                                             <color key="textColor" red="0.058823529411764705" green="0.2196078431372549" blue="0.058823529411764705" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
@@ -61,7 +66,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PS2" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TJt-A0-bOf">
-                                            <rect key="frame" x="317" y="0.0" width="58" height="58"/>
+                                            <rect key="frame" x="262" y="0.0" width="58" height="58"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="TJt-A0-bOf" secondAttribute="height" multiplier="1:1" id="6qF-Tq-hU5"/>
                                             </constraints>
@@ -103,6 +108,7 @@
                     <navigationItem key="navigationItem" id="6cB-GG-c4S"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="gradientView" destination="mK9-ao-yr6" id="MgG-FG-fqi"/>
                         <segue destination="E88-um-BJP" kind="presentation" identifier="AddGame" modalTransitionStyle="crossDissolve" id="oBS-Ve-TtB"/>
                     </connections>
                 </collectionViewController>
@@ -122,6 +128,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cMd-hu-PeM" customClass="GradientView" customModule="SoManyGames" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="-20" width="320" height="588"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" keyboardDismissMode="interactive" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="n2h-tF-R2R">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <color key="backgroundColor" red="0.60784313729999995" green="0.73725490199999999" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -140,7 +150,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NEh-zV-7zd">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="65"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
                                                     <fontDescription key="fontDescription" name="RPGSystem" family="RPGSystem" pointSize="28"/>
                                                     <color key="textColor" red="0.058823529409999999" green="0.21960784310000001" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -207,10 +217,14 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="cMd-hu-PeM" secondAttribute="trailing" id="5hm-Ev-2cN"/>
+                            <constraint firstItem="nMy-0c-yUw" firstAttribute="top" secondItem="cMd-hu-PeM" secondAttribute="bottom" id="6FV-82-FHC"/>
                             <constraint firstItem="LH7-FX-SGx" firstAttribute="leading" secondItem="5W1-mh-Gdl" secondAttribute="leading" id="8JX-KG-wCu"/>
+                            <constraint firstItem="cMd-hu-PeM" firstAttribute="top" secondItem="jy4-uA-HuE" secondAttribute="bottom" constant="-20" id="C2j-6z-NPv"/>
                             <constraint firstItem="n2h-tF-R2R" firstAttribute="leading" secondItem="5W1-mh-Gdl" secondAttribute="leading" id="PS0-qz-KiP"/>
                             <constraint firstItem="n2h-tF-R2R" firstAttribute="top" secondItem="jy4-uA-HuE" secondAttribute="bottom" id="SKr-RO-hnV"/>
                             <constraint firstAttribute="trailing" secondItem="LH7-FX-SGx" secondAttribute="trailing" id="ZvP-ux-XBz"/>
+                            <constraint firstItem="cMd-hu-PeM" firstAttribute="leading" secondItem="5W1-mh-Gdl" secondAttribute="leading" id="iUQ-xV-UqZ"/>
                             <constraint firstItem="nMy-0c-yUw" firstAttribute="top" secondItem="LH7-FX-SGx" secondAttribute="bottom" id="o5J-KO-8C6"/>
                             <constraint firstItem="nMy-0c-yUw" firstAttribute="top" secondItem="n2h-tF-R2R" secondAttribute="bottom" id="ocx-B4-XLt"/>
                             <constraint firstAttribute="trailing" secondItem="n2h-tF-R2R" secondAttribute="trailing" id="uyN-qg-5iA"/>
@@ -232,6 +246,7 @@
                         <outlet property="buttonHeightConstraint" destination="Sp7-Hb-mqc" id="xPi-Yd-z6c"/>
                         <outlet property="cancelButton" destination="3KB-nx-e8c" id="drI-Jw-7c3"/>
                         <outlet property="collectionView" destination="n2h-tF-R2R" id="arv-BY-NDM"/>
+                        <outlet property="gradientView" destination="cMd-hu-PeM" id="TKo-er-O0v"/>
                         <outlet property="textField" destination="gsR-LY-8NN" id="YfB-gb-uRy"/>
                     </connections>
                 </viewController>
