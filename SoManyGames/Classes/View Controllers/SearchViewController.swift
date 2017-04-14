@@ -64,6 +64,10 @@ class SearchViewController: KeyboardObservableUIViewController {
         dismiss(animated: true, completion: nil)
     }
 
+    override var keyCommands: [UIKeyCommand]? {
+        return [UIKeyCommand(input: "x", modifierFlags: [.command, .shift], action: #selector(SearchViewController.cancel(_:)), discoverabilityTitle: "Cancel")]
+    }
+
     func search(forTerm term: String) {
         if term != lastSearchedTerm {
             results = []

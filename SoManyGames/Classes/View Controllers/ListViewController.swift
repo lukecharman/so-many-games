@@ -68,6 +68,16 @@ extension ListViewController {
         }, completion: nil)
     }
 
+    override var keyCommands: [UIKeyCommand]? {
+        guard self.presentedViewController == nil else { return [] }
+
+        return [
+            UIKeyCommand(input: "a", modifierFlags: [.command, .shift], action: #selector(buttonTapped), discoverabilityTitle: "Add Game"),
+            UIKeyCommand(input: "b", modifierFlags: [.command, .shift], action: #selector(listButtonTapped), discoverabilityTitle: "Switch Backlogs"),
+            UIKeyCommand(input: "s", modifierFlags: [.command, .shift], action: #selector(sortButtonTapped), discoverabilityTitle: "Sort Games")
+        ]
+    }
+
 }
 
 // MARK: Button
@@ -282,7 +292,7 @@ extension ListViewController {
 
         cell.game = games[indexPath.item]
         cell.delegate = self
-        
+
         return cell
     }
 
@@ -359,5 +369,5 @@ extension ListViewController: GameCellDelegate {
         alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
         show(alert, sender: nil)
     }
-
+    
 }
