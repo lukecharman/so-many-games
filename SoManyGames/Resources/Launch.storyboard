@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="am1-LO-3BP">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="b4r-QC-ygp">
+            <objects>
+                <viewController id="am1-LO-3BP" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="FDi-K1-gmp"/>
+                        <viewControllerLayoutGuide type="bottom" id="AOv-Ie-iKG"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9iq-tC-JqN">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VoV-Uj-sWn">
+                                <rect key="frame" x="32" y="178" width="310" height="310"/>
+                                <color key="backgroundColor" red="0.60784313729999995" green="0.73725490199999999" blue="0.058823529409999999" alpha="0.5" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="VoV-Uj-sWn" secondAttribute="height" multiplier="1:1" id="DZQ-vC-lkL"/>
+                                    <constraint firstAttribute="width" constant="310" id="FHh-Ko-Buk"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ieX-V3-lR8">
+                                <rect key="frame" x="37.5" y="183.5" width="300" height="300"/>
+                                <color key="backgroundColor" red="0.60784313729999995" green="0.73725490199999999" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="Eth-hn-Fb2"/>
+                                    <constraint firstAttribute="width" secondItem="ieX-V3-lR8" secondAttribute="height" multiplier="1:1" id="f7L-1l-Bis"/>
+                                </constraints>
+                            </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SMG_Logo" translatesAutoresizingMaskIntoConstraints="NO" id="nZ6-9e-X9Z">
+                                <rect key="frame" x="42" y="188" width="290" height="290"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="290" id="Dbk-JR-CET"/>
+                                    <constraint firstAttribute="width" secondItem="nZ6-9e-X9Z" secondAttribute="height" multiplier="1:1" id="ehf-Si-TfL"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.058823529409999999" green="0.21960784310000001" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="nZ6-9e-X9Z" firstAttribute="centerY" secondItem="9iq-tC-JqN" secondAttribute="centerY" id="2C4-fC-17Z"/>
+                            <constraint firstItem="nZ6-9e-X9Z" firstAttribute="centerX" secondItem="9iq-tC-JqN" secondAttribute="centerX" id="Mhe-JB-e0o"/>
+                            <constraint firstItem="VoV-Uj-sWn" firstAttribute="width" secondItem="VoV-Uj-sWn" secondAttribute="height" multiplier="1:1" id="W9Y-3u-DLa"/>
+                            <constraint firstItem="VoV-Uj-sWn" firstAttribute="centerY" secondItem="9iq-tC-JqN" secondAttribute="centerY" id="fvJ-Kg-IFi"/>
+                            <constraint firstItem="ieX-V3-lR8" firstAttribute="centerX" secondItem="9iq-tC-JqN" secondAttribute="centerX" id="gNc-j3-86z"/>
+                            <constraint firstItem="VoV-Uj-sWn" firstAttribute="centerX" secondItem="9iq-tC-JqN" secondAttribute="centerX" id="l9W-YG-1Ow"/>
+                            <constraint firstItem="ieX-V3-lR8" firstAttribute="centerY" secondItem="9iq-tC-JqN" secondAttribute="centerY" id="qHw-iO-RsD"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WGc-g8-Fcu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="119" y="187"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="SMG_Logo" width="1024" height="1024"/>
+    </resources>
+</document>

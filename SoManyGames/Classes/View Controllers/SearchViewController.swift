@@ -155,10 +155,9 @@ class SearchViewController: KeyboardObservableUIViewController {
     }
 
     override func keyboardWillMove(to rect: CGRect, over duration: TimeInterval) {
-        print("KEYB")
         let closing = rect.origin.y == collectionView.frame.size.height + 20
         bottomBarBottomConstraint.constant = closing ? 0 : rect.size.height
-        UIView.animateKeyframes(withDuration: duration, delay: 0, options: .calculationModeCubic, animations: { 
+        UIView.animateKeyframes(withDuration: duration - 0.1, delay: 0, options: .calculationModeCubic, animations: {
             self.view.layoutIfNeeded()
         }, completion: nil)
     }
