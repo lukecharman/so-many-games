@@ -34,6 +34,10 @@ class GameList: Object {
         }
     }
 
+    func clear() {
+        list.removeAll()
+    }
+
     func move(_ from: Int, to: Int) {
         list.move(from: from, to: to)
     }

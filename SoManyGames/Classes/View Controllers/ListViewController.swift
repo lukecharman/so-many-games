@@ -21,6 +21,7 @@ class ListViewController: UICollectionViewController {
     var button = ActionButton(title: "add")
     var sortButton = ActionButton(title: "sort")
     var listButton = ActionButton(title: "playing")
+    var clearButton = ActionButton(title: "clear")
 
     var selectedGames = [Game]()
     var programmaticDeselection = false
@@ -43,6 +44,7 @@ extension ListViewController {
         makeAddButton()
         makeSortButton()
         makeListButton()
+        makeClearButton()
         makeEmptyStateLabel()
         updateEmptyStateLabel()
     }
@@ -104,6 +106,17 @@ extension ListViewController {
         listButton.addTarget(self, action: #selector(listButtonTapped), for: .touchUpInside)
     }
 
+    func makeClearButton() {
+        guard let collectionView = collectionView else { return }
+        guard let superview = collectionView.superview else { return }
+
+        superview.addSubview(clearButton)
+
+        clearButton.anchor(to: collectionView, at: .bottomRight)
+        clearButton.addTarget(self, action: #selector(clearButtonTapped), for: .touchUpInside)
+        clearButton.isHidden = true
+    }
+
     func buttonTapped() {
         guard Backlog.manager.currentGameListType == .active else { return }
 
@@ -135,6 +148,20 @@ extension ListViewController {
         let title = active ? "playing" : "finished"
         listButton.setTitle(title, for: .normal)
         button.isHidden = !active
+        clearButton.isHidden = active || games.count == 0
+    }
+
+    func clearButtonTapped() {
+        let alert = UIAlertController(title: "Clear Completed?", message: "Are you sure you want to clear all your completed games?", preferredStyle: UIDevice.current.userInterfaceIdiom == .pad ? .alert : .actionSheet)
+        alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in self.confirmClear() }))
+        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+
+    func confirmClear() {
+        Backlog.manager.clearCompleted()
+        games = Backlog.manager.games
+        collectionView?.reloadData()
     }
 
     func animateReorder() {
@@ -356,7 +383,10 @@ extension ListViewController: GameCellDelegate {
         guard Backlog.manager.currentGameListType == .completed else { return }
         let alert = UIAlertController(title: "Back into it?", message: "Want to move this game back to your active list?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in self.markAsUncompleted(game: game) }))
-        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { _ in
+            Backlog.manager.update(game) { game.completionPercentage = 1 }
+            self.collectionView?.reloadData()
+        }))
         show(alert, sender: nil)
     }
     

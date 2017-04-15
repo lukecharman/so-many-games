@@ -94,6 +94,12 @@ class Backlog {
         }
     }
 
+    func clearCompleted() {
+        try! Backlog.realm.write {
+            completedGameList.clear()
+        }
+    }
+
     private func exists(_ game: Game) -> Bool {
         let games = Backlog.realm.objects(Game.self).filter("id == \(game.id)")
         return games.count > 0
