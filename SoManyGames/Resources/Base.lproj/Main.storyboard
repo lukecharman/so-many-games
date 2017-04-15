@@ -109,7 +109,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="gradientView" destination="mK9-ao-yr6" id="MgG-FG-fqi"/>
-                        <segue destination="E88-um-BJP" kind="presentation" identifier="AddGame" modalTransitionStyle="crossDissolve" id="oBS-Ve-TtB"/>
+                        <segue destination="E88-um-BJP" kind="presentation" identifier="AddGame" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="oBS-Ve-TtB"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Qj-Ry-gA8" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -129,21 +129,21 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cMd-hu-PeM" customClass="GradientView" customModule="SoManyGames" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="-20" width="320" height="588"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" keyboardDismissMode="interactive" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="n2h-tF-R2R">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                                 <color key="backgroundColor" red="0.60784313729999995" green="0.73725490199999999" blue="0.058823529409999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="n21-lF-Vwk">
                                     <size key="itemSize" width="320" height="65"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="20" maxX="0.0" maxY="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="SearchCell" id="K9E-0z-sy0" customClass="SearchCell" customModule="SoManyGames" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="20" width="320" height="65"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
@@ -166,6 +166,28 @@
                                         <connections>
                                             <outlet property="label" destination="NEh-zV-7zd" id="pb1-O6-Vdj"/>
                                         </connections>
+                                    </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="LoadMoreCell" id="pMs-wz-N4G" customClass="LoadMoreCell" customModule="SoManyGames" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="65" width="320" height="65"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap to load more..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qoi-rQ-EZT">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
+                                                    <fontDescription key="fontDescription" name="RPGSystem" family="RPGSystem" pointSize="28"/>
+                                                    <color key="textColor" red="0.058823529409999999" green="0.21960784310000001" blue="0.058823529409999999" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstItem="Qoi-rQ-EZT" firstAttribute="leading" secondItem="pMs-wz-N4G" secondAttribute="leading" id="6f3-YH-Ajd"/>
+                                            <constraint firstAttribute="trailing" secondItem="Qoi-rQ-EZT" secondAttribute="trailing" id="K66-yo-OGI"/>
+                                            <constraint firstAttribute="bottom" secondItem="Qoi-rQ-EZT" secondAttribute="bottom" id="aRb-1i-cfx"/>
+                                            <constraint firstItem="Qoi-rQ-EZT" firstAttribute="top" secondItem="pMs-wz-N4G" secondAttribute="top" id="ciX-zJ-vPc"/>
+                                        </constraints>
                                     </collectionViewCell>
                                 </cells>
                                 <connections>
@@ -237,7 +259,6 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="bottomBar" destination="LH7-FX-SGx" id="dXd-PK-BpT"/>

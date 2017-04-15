@@ -14,9 +14,11 @@ class SearchViewController: KeyboardObservableUIViewController {
     @IBOutlet var textField: UITextField!
     @IBOutlet var cancelButton: ActionButton!
     @IBOutlet var bottomBar: UIView!
+
     @IBOutlet var bottomBarHeightConstraint: NSLayoutConstraint!
     @IBOutlet var buttonHeightConstraint: NSLayoutConstraint!
     @IBOutlet var bottomBarBottomConstraint: NSLayoutConstraint!
+
     @IBOutlet var gradientView: GradientView!
 
     let api = GiantBomb()
@@ -65,32 +67,45 @@ class SearchViewController: KeyboardObservableUIViewController {
     }
 
     func search(forTerm term: String) {
+        textField.resignFirstResponder()
+
         if term != lastSearchedTerm {
-            results = []
+            results.removeAll()
         }
 
         loading = true
-        api.search(forTerm: term, page: page) { games in
-            self.loading = false
-            self.textField.resignFirstResponder()
-            guard games.count > 0 else {
-                if self.results.count == 0 {
-                    let alert = UIAlertController(title: "No Results", message: "Uh-Oh", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                }
-                return
+
+        api.search(for: term, page: page) { [weak self] games in
+            guard let strongSelf = self else { return }
+
+            strongSelf.loading = false
+            strongSelf.loadingMore = false
+            strongSelf.lastSearchedTerm = term
+            strongSelf.results.append(contentsOf: games)
+
+            if games.count > 0 && self?.results.count == 0 {
+                strongSelf.presentNoResultsAlert(for: term)
+            } else if games.count == 0 && strongSelf.results.count > 0 {
+                strongSelf.presentNoMoreResultsAlert(for: term)
             }
 
-            let popBar = self.lastSearchedTerm != term
-            self.lastSearchedTerm = term
-            self.results.append(contentsOf: games)
-            self.collectionView.reloadData()
-            if popBar {
-                self.collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
-            }
-            self.loadingMore = false
+            strongSelf.collectionView.reloadData()
         }
+    }
+
+    func presentNoResultsAlert(for term: String) {
+        let alert = UIAlertController(title: "No Games Found", message: "We couldn't find any games containing \"\(term)\".", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { _ in
+            self.textField.becomeFirstResponder()
+        }))
+        present(alert, animated: true, completion: nil)
+        textField.text = ""
+    }
+
+    func presentNoMoreResultsAlert(for term: String) {
+        let alert = UIAlertController(title: "That's All!", message: "We found a total of \(results.count) games containing \"\(term)\".", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 
     var originalTerm: String?
@@ -140,7 +155,8 @@ class SearchViewController: KeyboardObservableUIViewController {
     }
 
     override func keyboardWillMove(to rect: CGRect, over duration: TimeInterval) {
-        let closing = rect.origin.y == collectionView.frame.size.height
+        print("KEYB")
+        let closing = rect.origin.y == collectionView.frame.size.height + 20
         bottomBarBottomConstraint.constant = closing ? 0 : rect.size.height
         UIView.animateKeyframes(withDuration: duration, delay: 0, options: .calculationModeCubic, animations: { 
             self.view.layoutIfNeeded()
@@ -178,15 +194,24 @@ class SearchViewController: KeyboardObservableUIViewController {
 
 extension SearchViewController: UICollectionViewDataSource {
 
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return results.count > 0 ? 2 : 1
+    }
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return results.count
+        return section == 0 ? results.count : 1
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchCell", for: indexPath) as! SearchCell
-        let game = results[indexPath.item]
-        cell.game = game
-        return cell
+        if indexPath.section == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchCell", for: indexPath) as! SearchCell
+            let game = results[indexPath.item]
+            cell.game = game
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LoadMoreCell", for: indexPath) as! LoadMoreCell
+            return cell
+        }
     }
 
 }
@@ -194,13 +219,10 @@ extension SearchViewController: UICollectionViewDataSource {
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let game = results[indexPath.item]
-        getPlatform(for: game)
-    }
-
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let triggerOffset = scrollView.contentOffset.y + scrollView.bounds.size.height
-        if scrollView.contentSize.height < triggerOffset {
+            if indexPath.section == 0 {
+            let game = results[indexPath.item]
+            getPlatform(for: game)
+        } else {
             loadMore()
         }
     }

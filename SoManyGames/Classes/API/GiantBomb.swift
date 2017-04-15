@@ -12,7 +12,7 @@ struct GiantBomb: APIClient {
 
     let session: URLSession = .shared
 
-    func search(forTerm term: String, page: Int = 1, completion: SearchCompletion?) {
+    func search(for term: String, page: Int = 1, completion: SearchCompletion?) {
         guard let url = URLBuilder().search(for: term, at: page) else {
             fatalError("Could not build search URL")
         }

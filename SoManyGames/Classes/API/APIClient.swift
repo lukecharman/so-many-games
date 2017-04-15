@@ -12,5 +12,5 @@ typealias JSONDictionary = [String: AnyObject]
 typealias SearchCompletion = ([Game]) -> ()
 
 protocol APIClient {
-    func search(forTerm term: String, page: Int, completion: SearchCompletion?)
+    func search(for term: String, page: Int, completion: SearchCompletion?)
 }
