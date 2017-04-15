@@ -199,7 +199,7 @@ extension ListViewController {
         let singular = "Would you like to delete this game?"
         let plural = "Would you like to delete these games?"
         let string = self.selectedGames.count > 1 ? plural : singular
-        let alert = UIAlertController(title: "Delete?", message: string, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Delete?", message: string, preferredStyle: UIDevice.current.userInterfaceIdiom == .pad ? .alert : .actionSheet)
         alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in self.confirmDelete() }))
         alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { _ in self.cancelDelete() }))
         present(alert, animated: true, completion: nil)
