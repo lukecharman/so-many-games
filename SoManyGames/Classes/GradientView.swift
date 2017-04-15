@@ -1,5 +1,5 @@
 //
-//  UIView+Gradients.swift
+//  GradientView.swift
 //  SoManyGames
 //
 //  Created by Luke Charman on 01/04/2017.

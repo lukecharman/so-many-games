@@ -11,7 +11,7 @@
 		8324A2841E90341600672438 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8324A2801E90341600672438 /* Assets.xcassets */; };
 		8324A2851E90341600672438 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8324A2811E90341600672438 /* Main.storyboard */; };
 		8324A2861E90341600672438 /* RPGSystem.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8324A2831E90341600672438 /* RPGSystem.ttf */; };
-		8324A2881E9038CB00672438 /* UIView+Gradients.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8324A2871E9038CB00672438 /* UIView+Gradients.swift */; };
+		8324A2881E9038CB00672438 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8324A2871E9038CB00672438 /* GradientView.swift */; };
 		832DAE621E8D5657001E6BB6 /* KeyboardObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832DAE611E8D5657001E6BB6 /* KeyboardObservable.swift */; };
 		83663AA51E7DD243004A5C67 /* SoManyGamesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83663AA41E7DD243004A5C67 /* SoManyGamesUITests.swift */; };
 		8366A9531E8D1A9A002868D9 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8366A9521E8D1A9A002868D9 /* ActionButton.swift */; };
@@ -53,7 +53,7 @@
 		8324A2801E90341600672438 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8324A2821E90341600672438 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8324A2831E90341600672438 /* RPGSystem.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = RPGSystem.ttf; sourceTree = "<group>"; };
-		8324A2871E9038CB00672438 /* UIView+Gradients.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Gradients.swift"; sourceTree = "<group>"; };
+		8324A2871E9038CB00672438 /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		832DAE611E8D5657001E6BB6 /* KeyboardObservable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardObservable.swift; sourceTree = "<group>"; };
 		83663A811E7DD243004A5C67 /* SoManyGames.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoManyGames.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83663A901E7DD243004A5C67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -184,7 +184,7 @@
 			children = (
 				83FFCC141E86D96B00E49C22 /* AppDelegate.swift */,
 				832DAE611E8D5657001E6BB6 /* KeyboardObservable.swift */,
-				8324A2871E9038CB00672438 /* UIView+Gradients.swift */,
+				8324A2871E9038CB00672438 /* GradientView.swift */,
 				83B8C44C1E9E956500F25CC7 /* Theme.swift */,
 				83FFCC121E86D96B00E49C22 /* API */,
 				83FFCC1F1E86D96B00E49C22 /* Persistence */,
@@ -443,7 +443,7 @@
 				83FFCC2E1E86D96B00E49C22 /* Platform.swift in Sources */,
 				83FFCC2A1E86D96B00E49C22 /* GameCell.swift in Sources */,
 				83FFCC311E86D96B00E49C22 /* ListViewController.swift in Sources */,
-				8324A2881E9038CB00672438 /* UIView+Gradients.swift in Sources */,
+				8324A2881E9038CB00672438 /* GradientView.swift in Sources */,
 				83FFCC2B1E86D96B00E49C22 /* SearchCell.swift in Sources */,
 				83FFCC2F1E86D96B00E49C22 /* Backlog.swift in Sources */,
 				83FFCC2C1E86D96B00E49C22 /* Game.swift in Sources */,
