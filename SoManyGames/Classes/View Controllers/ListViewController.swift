@@ -178,8 +178,12 @@ extension ListViewController {
     func updateButton() {
         if selectedGames.count > 0 {
             button.setTitle("delete", for: .normal)
+            sortButton.isHidden = true
+            listButton.isHidden = true
         } else {
             button.setTitle("add", for: .normal)
+            sortButton.isHidden = false
+            listButton.isHidden = false
         }
     }
 
