@@ -61,8 +61,12 @@ extension GiantBomb {
         }
 
         group.notify(queue: DispatchQueue.main) {
-            completion?(similarGames)
+            completion?(self.sort(similarGames))
         }
+    }
+
+    private func sort(_ games: [Game]) -> [Game] {
+        return games.sorted(by: { $0.name < $1.name })
     }
 
     private func fetchSimilarGames(from url: URL, completion: @escaping SearchCompletion) {
