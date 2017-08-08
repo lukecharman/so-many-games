@@ -50,7 +50,7 @@ class ActionButton: UIButton {
         setTitleColor(Colors.darkest, for: .normal)
         setBackgroundImage(UIImage(named: "Button"), for: .normal)
 
-        titleLabel?.font = UIFont(name: "RPGSystem", size: Sizes.button)
+        titleLabel?.font = UIFont(name: fontName, size: Sizes.button)
 
         layer.shadowColor = Colors.darkest.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 4)

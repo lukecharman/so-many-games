@@ -9,6 +9,7 @@
 import UIKit
 
 let iPad = UIApplication.shared.keyWindow?.traitCollection.horizontalSizeClass == .regular
+let fontName = "RPGSystem"
 
 struct Colors {
     static let lightest = UIColor(red:0.61, green:0.74, blue:0.06, alpha:1.0)

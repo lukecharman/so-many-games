@@ -23,11 +23,12 @@ import RealmSwift
         self.init()
 
         guard let id = json["id"] as? Int64,
-            let name = json["name"] as? String,
-            let platforms = json["platforms"] as? [JSONDictionary] else { return nil }
+            let name = json["name"] as? String else { return nil }
 
         self.id = id
         self.name = name
+
+        guard let platforms = json["platforms"] as? [JSONDictionary] else { return }
 
         for platform in platforms {
             guard let platform = Platform(withJSON: platform) else { continue }

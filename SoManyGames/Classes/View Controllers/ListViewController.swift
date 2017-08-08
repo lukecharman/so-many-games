@@ -39,7 +39,7 @@ extension ListViewController {
         collectionView?.allowsMultipleSelection = true
         collectionView?.backgroundColor = .clear
 
-        button.titleLabel?.font = UIFont(name: "RPGSystem", size: Sizes.button)
+        button.titleLabel?.font = UIFont(name: fontName, size: Sizes.button)
 
         makeAddButton()
         makeSortButton()
@@ -54,6 +54,12 @@ extension ListViewController {
 
         games = Backlog.manager.games
         collectionView?.reloadData()
+
+        let bomb: APIClient = GiantBomb()
+        bomb.similarGames(to: games) { games in
+            print("Similar games matching your set that you might like to try are:")
+            games.forEach { print($0.name) }
+        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -196,7 +202,7 @@ extension ListViewController {
         emptyStateLabel = UILabel()
         emptyStateLabel.numberOfLines = 0
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
-        emptyStateLabel.font = UIFont(name: "RPGSystem", size: Sizes.emptyState)
+        emptyStateLabel.font = UIFont(name: fontName, size: Sizes.emptyState)
         emptyStateLabel.textColor = Colors.darkest
 
         superview.addSubview(emptyStateLabel)

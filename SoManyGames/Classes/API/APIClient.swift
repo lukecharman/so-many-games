@@ -13,4 +13,5 @@ typealias SearchCompletion = ([Game]) -> ()
 
 protocol APIClient {
     func search(for term: String, page: Int, completion: SearchCompletion?)
+    func similarGames(to games: [Game], completion: SearchCompletion?)
 }

@@ -34,13 +34,54 @@ struct GiantBomb: APIClient {
         completion?(results.flatMap { Game(withJSON: $0) })
     }
 
-    struct URLBuilder {
+}
 
-        func search(for term: String, at page: Int) -> URL? {
-            guard let formattedTerm = term.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) else { return nil }
-            return URL(string: "https://www.giantbomb.com/api/search?query=" + formattedTerm + "&resources=game&page=" + "\(page)" + "&format=json&api_key=032cf98d2e30c7f3fe851d68798a9256a6df0766")
+extension GiantBomb {
+
+    func similarGames(to games: [Game], completion: SearchCompletion?) {
+        guard !games.isEmpty else {
+            fatalError("Can't get details for an empty game list!")
         }
-        
+
+        let queue = DispatchQueue(label: "com.lukecharman.somanygames", attributes: .concurrent, target: .main)
+        let group = DispatchGroup()
+
+        let urls = games.flatMap { URLBuilder().details(for: $0) }
+
+        var similarGames = [Game]()
+
+        urls.forEach { url in
+            group.enter()
+            queue.async(group: group) {
+                self.fetchSimilarGames(from: url, completion: { games in
+                    similarGames.append(contentsOf: games)
+                    group.leave()
+                })
+            }
+        }
+
+        group.notify(queue: DispatchQueue.main) {
+            completion?(similarGames)
+        }
+    }
+
+    private func fetchSimilarGames(from url: URL, completion: @escaping SearchCompletion) {
+        session.dataTask(with: url) { data, _, _ in
+            DispatchQueue.main.async { self.handleGameResult(withData: data, completion: completion) }
+        }.resume()
+    }
+
+    private func handleGameResult(withData data: Data?, completion: SearchCompletion?) {
+        guard let data = data,
+            let json = try? JSONSerialization.jsonObject(with: data, options: []),
+            let dict = json as? JSONDictionary,
+            let results = dict["results"] as? [String: AnyObject],
+            let similarGames = results["similar_games"] as? [[String: AnyObject]] else {
+                completion?([])
+                return
+        }
+
+        completion?(similarGames.flatMap { Game(withJSON: $0) })
     }
 
 }
