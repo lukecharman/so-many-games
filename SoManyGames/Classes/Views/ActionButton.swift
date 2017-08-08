@@ -30,23 +30,18 @@ class ActionButton: UIButton {
         heightAnchor.constraint(equalToConstant: ActionButton.side).isActive = true
 
         switch anchor {
-        case .topLeft:
+        case .topLeft, .topCenter, .topRight:
             topAnchor.constraint(equalTo: view.topAnchor, constant: ActionButton.spacing).isActive = true
+        case .bottomLeft, .bottomCenter, .bottomRight:
+            bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -ActionButton.spacing).isActive = true
+        }
+
+        switch anchor {
+        case .topLeft, .bottomLeft:
             leftAnchor.constraint(equalTo: view.leftAnchor, constant: ActionButton.spacing).isActive = true
-        case .topCenter:
-            topAnchor.constraint(equalTo: view.topAnchor, constant: ActionButton.spacing).isActive = true
+        case .topCenter, .bottomCenter:
             centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        case .topRight:
-            topAnchor.constraint(equalTo: view.topAnchor, constant: ActionButton.spacing).isActive = true
-            rightAnchor.constraint(equalTo: view.rightAnchor, constant: -ActionButton.spacing).isActive = true
-        case .bottomLeft:
-            bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -ActionButton.spacing).isActive = true
-            leftAnchor.constraint(equalTo: view.leftAnchor, constant: ActionButton.spacing).isActive = true
-        case .bottomCenter:
-            bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -ActionButton.spacing).isActive = true
-            centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        case .bottomRight:
-            bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -ActionButton.spacing).isActive = true
+        case .topRight, .bottomRight:
             rightAnchor.constraint(equalTo: view.rightAnchor, constant: -ActionButton.spacing).isActive = true
         }
     }

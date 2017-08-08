@@ -160,6 +160,19 @@ void Realm::open_with_config(const Config& config,
                 }
             };
             shared_group = std::make_unique<SharedGroup>(*history, options);
+
+            if (realm && config.should_compact_on_launch_function) {
+                size_t free_space = -1;
+                size_t used_space = -1;
+                // getting stats requires committing a write transaction beforehand.
+                Group* group = nullptr;
+                if (shared_group->try_begin_write(group)) {
+                    shared_group->commit();
+                    shared_group->get_stats(free_space, used_space);
+                    if (config.should_compact_on_launch_function(free_space + used_space, used_space))
+                        realm->compact();
+                }
+            }
         }
     }
     catch (realm::FileFormatUpgradeRequired const&) {
@@ -233,7 +246,16 @@ void Realm::read_schema_from_group_if_needed()
                                     m_schema_transaction_version);
 
     if (m_dynamic_schema) {
-        m_schema = std::move(schema);
+        if (m_schema == schema) {
+            // The structure of the schema hasn't changed. Bring the table column indices up to date.
+            m_schema.copy_table_columns_from(schema);
+        }
+        else {
+            // The structure of the schema has changed, so replace our copy of the schema.
+            // FIXME: This invalidates any pointers to the object schemas within the schema vector,
+            // which will cause problems for anyone that caches such a pointer.
+            m_schema = std::move(schema);
+        }
     }
     else {
         ObjectStore::verify_valid_external_changes(m_schema.compare(schema));
@@ -358,8 +380,8 @@ void Realm::set_schema_subset(Schema schema)
     set_schema(m_schema, std::move(schema));
 }
 
-void Realm::update_schema(Schema schema, uint64_t version,
-                          MigrationFunction migration_function, bool in_transaction)
+void Realm::update_schema(Schema schema, uint64_t version, MigrationFunction migration_function,
+                          DataInitializationFunction initialization_function, bool in_transaction)
 {
     schema.validate();
 
@@ -397,6 +419,7 @@ void Realm::update_schema(Schema schema, uint64_t version,
             cancel_transaction();
     });
 
+    uint64_t old_schema_version = m_schema_version;
     bool additive = m_config.schema_mode == SchemaMode::Additive;
     if (migration_function && !additive) {
         auto wrapper = [&] {
@@ -410,9 +433,11 @@ void Realm::update_schema(Schema schema, uint64_t version,
         // migration function needs to see the target schema on the "new" Realm
         std::swap(m_schema, schema);
         std::swap(m_schema_version, version);
+        m_in_migration = true;
         auto restore = util::make_scope_exit([&]() noexcept {
             std::swap(m_schema, schema);
             std::swap(m_schema_version, version);
+            m_in_migration = false;
         });
 
         ObjectStore::apply_schema_changes(read_group(), version, m_schema, m_schema_version,
@@ -422,6 +447,10 @@ void Realm::update_schema(Schema schema, uint64_t version,
         ObjectStore::apply_schema_changes(read_group(), m_schema_version, schema, version,
                                           m_config.schema_mode, required_changes);
         REALM_ASSERT_DEBUG(additive || (required_changes = ObjectStore::schema_from_group(read_group()).compare(schema)).empty());
+    }
+
+    if (initialization_function && old_schema_version == ObjectStore::NotVersioned) {
+        initialization_function(shared_from_this());
     }
 
     if (!in_transaction) {
@@ -441,8 +470,11 @@ void Realm::add_schema_change_handler()
     m_group->set_schema_change_notification_handler([&] {
         m_new_schema = ObjectStore::schema_from_group(read_group());
         m_schema_version = ObjectStore::get_schema_version(read_group());
-        if (m_dynamic_schema)
+        if (m_dynamic_schema) {
+            // FIXME: This invalidates any pointers to the object schemas within the schema vector,
+            // which will cause problems for anyone that caches such a pointer.
             m_schema = *m_new_schema;
+        }
         else
             m_schema.copy_table_columns_from(*m_new_schema);
     });

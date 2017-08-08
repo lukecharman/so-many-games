@@ -8,11 +8,11 @@
 
 import RealmSwift
 
-class Platform: Object {
+@objc class Platform: Object {
 
-    dynamic var id: Int64 = 0
-    dynamic var name: String = ""
-    dynamic var abbreviation: String = ""
+    @objc dynamic var id: Int64 = 0
+    @objc dynamic var name: String = ""
+    @objc dynamic var abbreviation: String = ""
 
     convenience init?(withJSON json: JSONDictionary) {
         self.init()

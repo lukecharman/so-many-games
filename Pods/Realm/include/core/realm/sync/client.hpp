@@ -37,6 +37,14 @@ namespace sync {
 
 class Client {
 public:
+    using port_type = util::network::Endpoint::port_type;
+    using SSLVerifyCallback = bool(const std::string& server_address,
+                                   port_type server_port,
+                                   const char* pem_data,
+                                   size_t pem_size,
+                                   int preverify_ok,
+                                   int depth);
+
     enum class Error;
 
     enum class ReconnectMode {
@@ -76,30 +84,6 @@ public:
         /// all logging happens on behalf of the thread that executes run().
         util::Logger* logger = nullptr;
 
-        /// verify_servers_ssl_certificate controls whether the server certificate
-        /// is verified for SSL connections. It should always be true in production.
-        ///
-        /// A server certificate is verified by first checking that the
-        /// certificate has a valid signature chain back to a trust/anchor certificate,
-        /// and secondly checking that the host name of the Realm URL matches
-        /// a host name contained in the certificate.
-        /// The host name of the certificate is stored in either Common Name or
-        /// the Alternative Subject Name (DNS section).
-        ///
-        /// From the point of view of OpenSSL, setting verify_servers_ssl_certificate
-        /// to false means calling `SSL_set_verify()` with `SSL_VERIFY_NONE`.
-        /// Setting verify_servers_ssl_certificate to true means calling `SSL_set_verify()`
-        /// with `SSL_VERIFY_PEER`, and setting the host name using the function
-        /// X509_VERIFY_PARAM_set1_host() (OpenSSL version 1.0.2 or newer).
-        /// For other platforms, an equivalent procedure is followed.
-        bool verify_servers_ssl_certificate = true;
-
-        /// ssl_trust_certificate_path is the path of a trust/anchor certificate
-        /// used by the client to verify the server certificate.
-        /// If ssl_trust_certificate_path is None (default), the default device
-        /// trust/anchor store is used.
-        util::Optional<std::string> ssl_trust_certificate_path; // default None
-
         /// Use ports 80 and 443 by default instead of 7800 and 7801
         /// respectively. Ideally, these default ports should have been made
         /// available via a different URI scheme instead (http/https or ws/wss).
@@ -136,6 +120,51 @@ public:
 
         /// The number of ms to wait for urgent pongs.
         uint_fast64_t pong_urgent_timeout_ms = 5000;
+
+        /// ssl_verify_callback is used to implement custom SSL certificate
+        /// verification. The signature of ssl_verify_callback is
+        ///
+        /// bool(const std::string& server_address,
+        ///      port_type server_port,
+        ///      const char* pem_data,
+        ///      size_t pem_size,
+        ///      int preverify_ok,
+        ///      int depth);
+        ///
+        /// server address and server_port is the address and port of the server
+        /// that a SSL connection is being established to.
+        /// pem_data is the certificate of length pem_size in
+        /// the PEM format. preverify_ok is OpenSSL's preverification of the
+        /// certificate. preverify_ok is either 0, or 1. If preverify_ok is 1,
+        /// OpenSSL has accepted the certificate and it will generally be safe
+        /// to trust that certificate. depth represents the position of the
+        /// certificate in the certificate chain sent by the server. depth = 0
+        /// represents the actual server certificate that should contain the
+        /// host name(server address) of the server. The highest depth is the
+        /// root certificate.
+        /// The callback function will receive the certificates starting from
+        /// the root certificate and moving down the chain until it reaches the
+        /// server's own certificate with a host name. The depth of the last
+        /// certificate is 0. The depth of the first certificate is chain
+        /// length - 1.
+        ///
+        /// The return value of the callback function decides whether the
+        /// client accepts the certificate. If the return value is false, the
+        /// processing of the certificate chain is interrupted and the SSL
+        /// connection is rejected. If the return value is true, the verification
+        /// process continues. If the callback function returns true for all
+        /// presented certificates including the depth == 0 certificate, the
+        /// SSL connection is accepted.
+        ///
+        /// A recommended way of using the callback function is to return true
+        /// if preverify_ok = 1 and depth > 0,
+        /// always check the host name if depth = 0,
+        /// and use an independent verification step if preverify_ok = 0.
+        ///
+        /// Another possible way of using the callback is to collect all the
+        /// certificates until depth = 0, and present the entire chain for
+        /// independent verification.
+        std::function<SSLVerifyCallback> ssl_verify_callback;
     };
 
     /// \throw util::EventLoop::Implementation::NotAvailable if no event loop
@@ -159,7 +188,9 @@ public:
     ///
     /// This corresponds to calling Session::cancel_reconnect_delay() on all
     /// bound sessions, but will also cancel reconnect delays applying to
-     // servers for which there are currently no bound sessions.
+    /// servers for which there are currently no bound sessions.
+    ///
+    /// Thread-safe.
     void cancel_reconnect_delay();
 
 private:
@@ -227,7 +258,8 @@ public:
                                  std::uint_fast64_t downloadable_bytes,
                                  std::uint_fast64_t uploaded_bytes,
                                  std::uint_fast64_t uploadable_bytes,
-                                 std::uint_fast64_t progress_version);
+                                 std::uint_fast64_t progress_version,
+                                 std::uint_fast64_t snapshot_version);
     using WaitOperCompletionHandler = std::function<void(std::error_code)>;
 
     class Config {
@@ -362,23 +394,18 @@ public:
     /// unless the session is interrupted before a message from the server has
     /// been received.
     ///
-    /// The handler is called on the event loop thread.
-    /// The handler is called after or during set_progress_handler(),
-    /// after bind(), after each DOWNLOAD message, and after each local
-    /// transaction (nonsync_transact_notify).
+    /// The handler is called on the event loop thread.The handler after bind(),
+    /// after each DOWNLOAD message, and after each local transaction
+    /// (nonsync_transact_notify).
     ///
     /// set_progress_handler() is not thread safe and it must be called before
     /// bind() is called. Subsequent calls to set_progress_handler() overwrite
     /// the previous calls. Typically, this function is called once per session.
     ///
-    /// The progress handler is also posted to the event loop during the
-    /// execution of set_progress_handler().
-    ///
-    /// CAUTION: The specified callback function may be called before the call
-    /// to set_progress_handler() returns, and it may be called
+    /// CAUTION: The specified callback function may be called
     /// (or continue to execute) after the session object is destroyed.
     /// The application must pass a handler that can be safely called, and can
-    /// execute from the point in time where set_progress_handler() is called,
+    /// execute from the point in time where bind() is called,
     /// and up until the point in time where the last invocation of
     /// `client.run()` returns. Here, `client` refers to the associated
     /// Client object.
@@ -486,11 +513,43 @@ public:
     ///
     /// \param protocol See \ref Protocol.
     ///
+    /// \param verify_servers_ssl_certificate controls whether the server
+    /// certificate is verified for SSL connections. It should generally be true
+    /// in production. The default value of verify_servers_ssl_certificate is
+    /// true.
+    ///
+    /// A server certificate is verified by first checking that the
+    /// certificate has a valid signature chain back to a trust/anchor certificate,
+    /// and secondly checking that the host name of the Realm URL matches
+    /// a host name contained in the certificate.
+    /// The host name of the certificate is stored in either Common Name or
+    /// the Alternative Subject Name (DNS section).
+    ///
+    /// From the point of view of OpenSSL, setting verify_servers_ssl_certificate
+    /// to false means calling `SSL_set_verify()` with `SSL_VERIFY_NONE`.
+    /// Setting verify_servers_ssl_certificate to true means calling `SSL_set_verify()`
+    /// with `SSL_VERIFY_PEER`, and setting the host name using the function
+    /// X509_VERIFY_PARAM_set1_host() (OpenSSL version 1.0.2 or newer).
+    /// For other platforms, an equivalent procedure is followed.
+    ///
+    /// \param ssl_trust_certificate_path is the path of a trust/anchor
+    /// certificate used by the client to verify the server certificate.
+    /// If ssl_trust_certificate_path is None (default), the default device
+    /// trust/anchor store is used.
+    ///
+    /// If Client::Config::ssl_verify_callback is set, that function is called
+    /// to verify the certificate, unless verify_servers_ssl_certificate is
+    /// false.
+    ///
     /// \throw BadServerUrl if the specified server URL is malformed.
-    void bind(std::string server_url, std::string signed_user_token);
+    void bind(std::string server_url, std::string signed_user_token,
+            bool verify_servers_ssl_certificate = true,
+            util::Optional<std::string> ssl_trust_certificate_path = util::none);
     void bind(std::string server_address, std::string server_path,
-              std::string signed_user_token, port_type server_port = 0,
-              Protocol protocol = Protocol::realm);
+            std::string signed_user_token, port_type server_port = 0,
+            Protocol protocol = Protocol::realm,
+            bool verify_servers_ssl_certificate = true,
+            util::Optional<std::string> ssl_trust_certificate_path = util::none);
     /// @}
 
     /// \brief Refresh the user token associated with this session.
@@ -516,7 +575,7 @@ public:
     /// \brief Inform the synchronization agent about changes of local origin.
     ///
     /// This function must be called by the application after a transaction
-    /// performed on its behlaf, that is, after a transaction that is not
+    /// performed on its behalf, that is, after a transaction that is not
     /// performed to integrate a changeset that was downloaded from the server.
     ///
     /// It is an error to call this function before bind() has been called, and
@@ -543,8 +602,8 @@ public:
     /// i.e., prior to the invocation of async_wait_for_upload_completion() or
     /// async_wait_for_sync_completion(). Unannounced changesets may get picked
     /// up, but there is no guarantee that they will be, however, if a certain
-    /// changeset is announced, then all previous changesets are implicitely
-    /// announced. Also all preexisting changesets are implicitely announced
+    /// changeset is announced, then all previous changesets are implicitly
+    /// announced. Also all preexisting changesets are implicitly announced
     /// when the session is initiated.
     ///
     /// Download is considered complete when all non-empty changesets of remote

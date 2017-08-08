@@ -22,6 +22,7 @@
 #include <string>
 
 #include <realm/impl/continuous_transactions_history.hpp>
+#include <realm/sync/instruction_replication.hpp>
 #include <realm/sync/transform.hpp>
 
 #ifndef REALM_SYNC_HISTORY_HPP
@@ -56,7 +57,7 @@ struct SyncProgress {
 
 
 class ClientHistory:
-        public TrivialReplication {
+        public InstructionReplication {
 public:
     using version_type    = TrivialReplication::version_type;
     using file_ident_type = HistoryEntry::file_ident_type;
@@ -200,7 +201,8 @@ public:
     virtual void get_upload_download_bytes(uint_fast64_t& downloaded_bytes,
                                            uint_fast64_t& downloadable_bytes,
                                            uint_fast64_t& uploaded_bytes,
-                                           uint_fast64_t& uploadable_bytes) = 0;
+                                           uint_fast64_t& uploadable_bytes,
+                                           uint_fast64_t& snapshot_version) = 0;
 
     /// See set_cooked_progress().
     struct CookedProgress {
@@ -331,7 +333,7 @@ std::unique_ptr<ClientHistory> make_client_history(const std::string& realm_path
 // Implementation
 
 inline ClientHistory::ClientHistory(const std::string& realm_path):
-    TrivialReplication(realm_path)
+    InstructionReplication(realm_path)
 {
 }
 

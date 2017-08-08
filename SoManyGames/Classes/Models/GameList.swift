@@ -11,7 +11,8 @@ import RealmSwift
 
 class GameList: Object {
 
-    var id: String = ""
+    @objc var id: String = ""
+
     var list = List<Game>()
 
     convenience init(id: String) {

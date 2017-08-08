@@ -18,7 +18,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "RLMThreadSafeReference.h"
+#import <Realm/RLMThreadSafeReference.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -144,17 +144,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Returns a sorted `RLMResults` from the collection.
 
- @param property    The property name to sort by.
- @param ascending   The direction to sort in.
-
- @return    An `RLMResults` sorted by the specified property.
- */
-- (RLMResults *)sortedResultsUsingProperty:(NSString *)property ascending:(BOOL)ascending
-    __deprecated_msg("Use `-sortedResultsUsingKeyPath:ascending:`");
-
-/**
- Returns a sorted `RLMResults` from the collection.
-
  @param properties  An array of `RLMSortDescriptor`s to sort by.
 
  @return    An `RLMResults` sorted by the specified properties.
@@ -246,6 +235,66 @@ NS_ASSUME_NONNULL_BEGIN
                                                          RLMCollectionChange *__nullable change,
                                                          NSError *__nullable error))block __attribute__((warn_unused_result));
 
+#pragma mark - Aggregating Property Values
+
+/**
+ Returns the minimum (lowest) value of the given property among all the objects
+ in the collection.
+
+     NSNumber *min = [results minOfProperty:@"age"];
+
+ @warning You cannot use this method on `RLMObject`, `RLMArray`, and `NSData` properties.
+
+ @param property The property whose minimum value is desired. Only properties of
+                 types `int`, `float`, `double`, and `NSDate` are supported.
+
+ @return The minimum value of the property, or `nil` if the Results are empty.
+ */
+- (nullable id)minOfProperty:(NSString *)property;
+
+/**
+ Returns the maximum (highest) value of the given property among all the objects
+ in the collection.
+
+     NSNumber *max = [results maxOfProperty:@"age"];
+
+ @warning You cannot use this method on `RLMObject`, `RLMArray`, and `NSData` properties.
+
+ @param property The property whose maximum value is desired. Only properties of
+                 types `int`, `float`, `double`, and `NSDate` are supported.
+
+ @return The maximum value of the property, or `nil` if the Results are empty.
+ */
+- (nullable id)maxOfProperty:(NSString *)property;
+
+/**
+ Returns the sum of the values of a given property over all the objects in the collection.
+
+     NSNumber *sum = [results sumOfProperty:@"age"];
+
+ @warning You cannot use this method on `RLMObject`, `RLMArray`, and `NSData` properties.
+
+ @param property The property whose values should be summed. Only properties of
+                 types `int`, `float`, and `double` are supported.
+
+ @return The sum of the given property.
+ */
+- (NSNumber *)sumOfProperty:(NSString *)property;
+
+/**
+ Returns the average value of a given property over the objects in the collection.
+
+     NSNumber *average = [results averageOfProperty:@"age"];
+
+ @warning You cannot use this method on `RLMObject`, `RLMArray`, and `NSData` properties.
+
+ @param property The property whose average value should be calculated. Only
+                 properties of types `int`, `float`, and `double` are supported.
+
+ @return    The average value of the given property, or `nil` if the Results are empty.
+ */
+- (nullable NSNumber *)averageOfProperty:(NSString *)property;
+
 @end
 
 /**
@@ -253,7 +302,7 @@ NS_ASSUME_NONNULL_BEGIN
  `sortedResultsUsingDescriptors:`. It is similar to `NSSortDescriptor`, but supports
  only the subset of functionality which can be efficiently run by Realm's query
  engine.
- 
+
  `RLMSortDescriptor` instances are immutable.
  */
 @interface RLMSortDescriptor : NSObject
@@ -281,19 +330,6 @@ NS_ASSUME_NONNULL_BEGIN
  Returns a copy of the receiver with the sort direction reversed.
  */
 - (instancetype)reversedSortDescriptor;
-
-#pragma mark - Deprecated
-
-/**
- The name of the property which the sort descriptor orders results by.
- */
-@property (nonatomic, readonly) NSString *property __deprecated_msg("Use `-keyPath`");
-
-/**
- Returns a new sort descriptor for the given property name and sort direction.
- */
-+ (instancetype)sortDescriptorWithProperty:(NSString *)propertyName ascending:(BOOL)ascending
-    __deprecated_msg("Use `+sortDescriptorWithKeyPath:ascending:`");
 
 @end
 
@@ -328,11 +364,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  The indices in the new version of the collection which were modified.
- 
+
  For `RLMResults`, this means that one or more of the properties of the object at
  that index were modified (or an object linked to by that object was
  modified).
- 
+
  For `RLMArray`, the array itself being modified to contain a
  different object at that index will also be reported as a modification.
  */

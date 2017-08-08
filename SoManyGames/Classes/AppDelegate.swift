@@ -29,9 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         let size = UIScreen.main.bounds.size
 
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            return .all
-        } else if max(size.width, size.height) > 700 {
+        if UIDevice.current.userInterfaceIdiom == .pad || max(size.width, size.height) > 700 {
             return .all
         } else {
             return .portrait
@@ -39,4 +37,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
-

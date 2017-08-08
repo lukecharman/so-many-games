@@ -18,10 +18,12 @@
 
 #import "RLMArray_Private.hpp"
 
-#import "RLMObject_Private.h"
-#import "RLMObjectStore.h"
 #import "RLMObjectSchema.h"
+#import "RLMObjectStore.h"
+#import "RLMObject_Private.h"
+#import "RLMProperty_Private.h"
 #import "RLMQueryUtil.hpp"
+#import "RLMSchema_Private.h"
 #import "RLMSwiftSupport.h"
 #import "RLMThreadSafeReference_Private.hpp"
 #import "RLMUtil.hpp"
@@ -344,6 +346,55 @@ static void RLMValidateArrayBounds(__unsafe_unretained RLMArray *const ar,
     [_backingArray setValue:value forKey:key];
 }
 
+- (void)validateAggregateProperty:(NSString *)propertyName
+                           method:(SEL)aggregateMethod
+                        allowDate:(bool)allowDate {
+    RLMObjectSchema *objectSchema;
+    if (_backingArray.count) {
+        objectSchema = [_backingArray[0] objectSchema];
+    }
+    else {
+        objectSchema = [RLMSchema.partialPrivateSharedSchema schemaForClassName:_objectClassName];
+    }
+
+    RLMProperty *prop = RLMValidatedProperty(objectSchema, propertyName);
+    switch (prop.type) {
+        case RLMPropertyTypeInt:
+        case RLMPropertyTypeFloat:
+        case RLMPropertyTypeDouble:
+            break;
+        case RLMPropertyTypeDate:
+            if (allowDate) {
+                break;
+            }
+            [[clang::fallthrough]];
+        default:
+            @throw RLMException(@"%@ is not supported for %@ property '%@.%@'",
+                                NSStringFromSelector(aggregateMethod),
+                                RLMTypeToString(prop.type), _objectClassName, propertyName);
+    }
+}
+
+- (id)minOfProperty:(NSString *)property {
+    [self validateAggregateProperty:property method:_cmd allowDate:true];
+    return [_backingArray valueForKeyPath:[@"@min." stringByAppendingString:property]];
+}
+
+- (id)maxOfProperty:(NSString *)property {
+    [self validateAggregateProperty:property method:_cmd allowDate:true];
+    return [_backingArray valueForKeyPath:[@"@max." stringByAppendingString:property]];
+}
+
+- (id)sumOfProperty:(NSString *)property {
+    [self validateAggregateProperty:property method:_cmd allowDate:false];
+    return [_backingArray valueForKeyPath:[@"@sum." stringByAppendingString:property]];
+}
+
+- (id)averageOfProperty:(NSString *)property {
+    [self validateAggregateProperty:property method:_cmd allowDate:false];
+    return [_backingArray valueForKeyPath:[@"@avg." stringByAppendingString:property]];
+}
+
 - (NSUInteger)indexOfObjectWithPredicate:(NSPredicate *)predicate {
     if (!_backingArray) {
         return NSNotFound;
@@ -380,11 +431,6 @@ static void RLMValidateArrayBounds(__unsafe_unretained RLMArray *const ar,
 - (RLMResults *)sortedResultsUsingKeyPath:(NSString *)keyPath ascending:(BOOL)ascending
 {
     return [self sortedResultsUsingDescriptors:@[[RLMSortDescriptor sortDescriptorWithKeyPath:keyPath ascending:ascending]]];
-}
-
-- (RLMResults *)sortedResultsUsingProperty:(NSString *)property ascending:(BOOL)ascending
-{
-    return [self sortedResultsUsingKeyPath:property ascending:ascending];
 }
 
 - (RLMResults *)sortedResultsUsingDescriptors:(NSArray<RLMSortDescriptor *> *)properties
@@ -454,16 +500,8 @@ static void RLMValidateArrayBounds(__unsafe_unretained RLMArray *const ar,
     return desc;
 }
 
-+ (instancetype)sortDescriptorWithProperty:(NSString *)propertyName ascending:(BOOL)ascending {
-    return [RLMSortDescriptor sortDescriptorWithKeyPath:propertyName ascending:ascending];
-}
-
 - (instancetype)reversedSortDescriptor {
     return [self.class sortDescriptorWithKeyPath:_keyPath ascending:!_ascending];
-}
-
-- (NSString *)property {
-    return _keyPath;
 }
 
 @end

@@ -8,14 +8,14 @@
 
 import RealmSwift
 
-class Game: Object {
+@objc class Game: Object {
 
-    dynamic var hasFullDetails = false
+    @objc dynamic var hasFullDetails = false
 
-    dynamic var id: Int64 = 0
-    dynamic var name: String = ""
-    dynamic var activePlatform: Platform?
-    dynamic var completionPercentage: Double = 0
+    @objc dynamic var id: Int64 = 0
+    @objc dynamic var name: String = ""
+    @objc dynamic var activePlatform: Platform?
+    @objc dynamic var completionPercentage: Double = 0
 
     var platforms = List<Platform>()
 

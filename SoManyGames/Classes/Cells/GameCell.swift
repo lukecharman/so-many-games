@@ -91,7 +91,7 @@ class GameCell: UICollectionViewCell {
         layoutIfNeeded()
     }
 
-    func handleLongPress(recognizer: UILongPressGestureRecognizer) {
+    @objc func handleLongPress(recognizer: UILongPressGestureRecognizer) {
         guard let game = game else { return }
 
         UIView.animate(withDuration: 0.3) { 
@@ -156,7 +156,7 @@ class GameCell: UICollectionViewCell {
         progressBar.alpha = 1
     }
 
-    func handlePan(recognizer: UIPanGestureRecognizer) {
+    @objc func handlePan(recognizer: UIPanGestureRecognizer) {
         guard let game = game else { return }
         guard !isSelected else { return }
 

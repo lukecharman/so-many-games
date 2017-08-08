@@ -117,7 +117,7 @@ extension ListViewController {
         clearButton.isHidden = true
     }
 
-    func buttonTapped() {
+    @objc func buttonTapped() {
         guard Backlog.manager.currentGameListType == .active else { return }
 
         if button.title(for: .normal) == "add" {
@@ -127,7 +127,7 @@ extension ListViewController {
         }
     }
 
-    func sortButtonTapped() {
+    @objc func sortButtonTapped() {
         guard Backlog.manager.currentGameListType == .active else { return }
 
         Backlog.manager.sort()
@@ -139,7 +139,7 @@ extension ListViewController {
         })
     }
 
-    func listButtonTapped() {
+    @objc func listButtonTapped() {
         Backlog.manager.switchLists()
         games = Backlog.manager.games
         collectionView?.reloadData()
@@ -151,7 +151,7 @@ extension ListViewController {
         clearButton.isHidden = active || games.count == 0
     }
 
-    func clearButtonTapped() {
+    @objc func clearButtonTapped() {
         let alert = UIAlertController(title: "Clear Completed?", message: "Are you sure you want to clear all your completed games?", preferredStyle: UIDevice.current.userInterfaceIdiom == .pad ? .alert : .actionSheet)
         alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in self.confirmClear() }))
         alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
