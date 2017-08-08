@@ -61,6 +61,8 @@ class GameCell: UICollectionViewCell {
         percentageLabel.font = percentageLabel.font.withSize(Sizes.gameCellSub)
         label.font = label.font.withSize(Sizes.gameCellMain)
         label.numberOfLines = iPad ? 3 : 2
+
+        clipsToBounds = false
     }
 
     func setUpRecognizers() {
