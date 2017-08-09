@@ -10,6 +10,8 @@ import Foundation
 
 struct GiantBomb: APIClient {
 
+    typealias Counts = [Int64: Int]
+
     let session: URLSession = .shared
 
     func search(for term: String, page: Int = 1, completion: SearchCompletion?) {
@@ -66,7 +68,43 @@ extension GiantBomb {
     }
 
     private func sort(_ games: [Game]) -> [Game] {
-        return games.sorted(by: { $0.name < $1.name })
+        var counts = Counts()
+
+        games.forEach { counts[$0.id] = (counts[$0.id] ?? 0) + 1 }
+
+        let sorted = dedupe(games: games, with: counts).sorted(by: {
+            guard let first = counts[$0.id], let second = counts[$1.id] else { return true }
+            return first > second
+        })
+
+        return sorted
+    }
+
+    private func dedupe(games: [Game], with counts: Counts) -> [Game] {
+        var copy = games
+
+        let elementsWithDuplicates = counts.filter { (id, count) in count > 1 }
+        
+        for element in elementsWithDuplicates {
+            guard element.value > 1 else { continue }
+            if let duplicateToRemove = game(with: element.key, in: copy) {
+                if let indexOfDuplicateToRemove = copy.index(of: duplicateToRemove) {
+                    copy.remove(at: indexOfDuplicateToRemove)
+                }
+            }
+        }
+
+        return copy
+    }
+
+    private func game(with id: Int64, in array: [Game]) -> Game? {
+        for game in array {
+            if game.id == id {
+                return game
+            }
+        }
+
+        return nil
     }
 
     private func fetchSimilarGames(from url: URL, completion: @escaping SearchCompletion) {
