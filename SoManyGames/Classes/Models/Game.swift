@@ -36,4 +36,12 @@ import RealmSwift
         }
     }
 
+    static func ==(lhs: Game, rhs: Game) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    override var hashValue: Int {
+        return id.hashValue
+    }
+
 }
