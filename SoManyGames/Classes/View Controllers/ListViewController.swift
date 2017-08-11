@@ -226,6 +226,14 @@ extension ListViewController {
         }
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == "ShowDetails" else { return }
+        guard let game = sender as? Game else { return }
+        guard let dest = segue.destination as? GamesViewController else { return }
+
+        dest.game = game
+    }
+
 }
 
 // MARK:- Deletion
@@ -349,12 +357,13 @@ extension ListViewController {
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? GameCell else { return }
-        select(cell: cell, at: indexPath)
+//        select(cell: cell, at: indexPath)
+        performSegue(withIdentifier: "ShowDetails", sender: games[indexPath.item])
     }
 
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? GameCell else { return }
-        deselect(cell: cell, at: indexPath)
+//        deselect(cell: cell, at: indexPath)
     }
 
     override func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
