@@ -8,7 +8,6 @@
 
 import UIKit
 
-@IBDesignable
 class GradientView: UIView {
 
     private let h = CAGradientLayer()

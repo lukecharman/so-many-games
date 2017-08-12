@@ -54,12 +54,6 @@ extension ListViewController {
 
         games = Backlog.manager.games
         collectionView?.reloadData()
-
-        let bomb: APIClient = GiantBomb()
-        bomb.similarGames(to: games) { games in
-            print("Similar games matching your set that you might like to try are:")
-            games.forEach { print($0.name) }
-        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -229,7 +223,7 @@ extension ListViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard segue.identifier == "ShowDetails" else { return }
         guard let game = sender as? Game else { return }
-        guard let dest = segue.destination as? GamesViewController else { return }
+        guard let dest = segue.destination as? GameViewController else { return }
 
         dest.game = game
     }

@@ -46,10 +46,6 @@ class SearchViewController: KeyboardObservableUIViewController {
         view.setNeedsLayout()
 
         textField.font = textField.font?.withSize(Sizes.emptyState)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         textField.becomeFirstResponder()
     }
 
