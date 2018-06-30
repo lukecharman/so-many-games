@@ -21,6 +21,8 @@
 		8370651120E7BD5E008092FD /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8370650A20E7BD5D008092FD /* Game.swift */; };
 		8370651220E7BD5E008092FD /* GameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8370650B20E7BD5D008092FD /* GameList.swift */; };
 		8370651320E7BD5E008092FD /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8370650C20E7BD5D008092FD /* Platform.swift */; };
+		8370652A20E7BE6A008092FD /* SMGBrain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8370652920E7BE6A008092FD /* SMGBrain.framework */; };
+		8370652B20E7BE6A008092FD /* SMGBrain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8370652920E7BE6A008092FD /* SMGBrain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83AD332B1F3E482300A4A720 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AD332A1F3E482300A4A720 /* GameViewController.swift */; };
 		83B7DFC81F3F5F4B003A6D6F /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B7DFC71F3F5F4B003A6D6F /* GradientView.swift */; };
 		83B8C44D1E9E956500F25CC7 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B8C44C1E9E956500F25CC7 /* Theme.swift */; };
@@ -39,6 +41,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8370652B20E7BE6A008092FD /* SMGBrain.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -66,6 +69,7 @@
 		8370650A20E7BD5D008092FD /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		8370650B20E7BD5D008092FD /* GameList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; };
 		8370650C20E7BD5D008092FD /* Platform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
+		8370652920E7BE6A008092FD /* SMGBrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SMGBrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83AD332A1F3E482300A4A720 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		83B7DFC71F3F5F4B003A6D6F /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		83B8C44C1E9E956500F25CC7 /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -85,6 +89,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ED39AB624FDCBC67F1C3D8A0 /* Pods_SoManyGames.framework in Frameworks */,
+				8370652A20E7BE6A008092FD /* SMGBrain.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,6 +125,7 @@
 				83663A821E7DD243004A5C67 /* Products */,
 				41AC0402864C06EA5178ABA4 /* Pods */,
 				C0D734037F7D6754A50CCD6E /* Frameworks */,
+				8370652920E7BE6A008092FD /* SMGBrain.framework */,
 			);
 			sourceTree = "<group>";
 		};

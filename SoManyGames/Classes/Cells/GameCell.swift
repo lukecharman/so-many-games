@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SMGBrain
 
 protocol GameCellDelegate: class {
     func game(_ game: Game, didUpdateProgress progress: Double)
