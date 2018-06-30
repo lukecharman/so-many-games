@@ -17,9 +17,9 @@ protocol KeyboardObservable {
 extension KeyboardObservable where Self: UIViewController {
 
     func startKeyboardObserving(observer: KeyboardObservable) {
-        NotificationCenter.default.addObserver(forName: Notification.Name.UIKeyboardWillChangeFrame, object: nil, queue: nil) { note in
-            guard let rect = note.userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect else { return }
-            guard let duration = note.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval else { return }
+        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: nil) { note in
+            guard let rect = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+            guard let duration = note.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval else { return }
             observer.keyboardWillMove(to: rect, over: duration)
         }
     }

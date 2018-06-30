@@ -32,16 +32,21 @@ struct ChangesetEncoder: InstructionHandler {
     const util::AppendBuffer<char>& buffer() const noexcept;
     InternString intern_string(StringData);
 
-    void set_intern_string(uint32_t index, StringBufferRange) final;
+    void set_intern_string(uint32_t index, StringBufferRange) override;
     // FIXME: This doesn't copy the input, but the drawback is that there can
     // only be a single StringBufferRange per instruction. Luckily, no
     // instructions exist that require two or more.
-    StringBufferRange add_string_range(StringData) final;
-    void operator()(const Instruction&) final;
+    StringBufferRange add_string_range(StringData) override;
+    void operator()(const Instruction&) override;
 
 #define REALM_DEFINE_INSTRUCTION_HANDLER(X) void operator()(const Instruction::X&);
     REALM_FOR_EACH_INSTRUCTION_TYPE(REALM_DEFINE_INSTRUCTION_HANDLER)
 #undef REALM_DEFINE_INSTRUCTION_HANDLER
+
+protected:
+    template<class E> static void encode(E& encoder, const Instruction&);
+
+    StringData get_string(StringBufferRange) const noexcept;
 
 private:
     template<class... Args>
@@ -69,12 +74,33 @@ private:
     StringData m_string_range;
 };
 
-void encode_changeset(const Changeset&,
-                      util::AppendBuffer<char>& out_buffer);
+void encode_changeset(const Changeset&, util::AppendBuffer<char>& out_buffer);
+
+
+
+
+// Implementation
+
+inline const util::AppendBuffer<char>& ChangesetEncoder::buffer() const noexcept
+{
+    return m_buffer;
+}
 
 inline void ChangesetEncoder::operator()(const Instruction& instr)
 {
-    instr.visit(*this);
+    encode(*this, instr); // Throws
+}
+
+template<class E> inline void ChangesetEncoder::encode(E& encoder, const Instruction& instr)
+{
+    instr.visit(encoder); // Throws
+}
+
+inline StringData ChangesetEncoder::get_string(StringBufferRange range) const noexcept
+{
+    const char* data = m_string_range.data() + range.offset;
+    std::size_t size = std::size_t(range.size);
+    return StringData{data, size};
 }
 
 } // namespace sync

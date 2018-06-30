@@ -44,7 +44,7 @@ namespace sync {
 // protocol-breaking change!
 #define REALM_FOR_EACH_INSTRUCTION_TYPE(X) \
     X(SelectTable) \
-    X(SelectContainer) \
+    X(SelectField) \
     X(AddTable) \
     X(EraseTable) \
     X(CreateObject) \
@@ -56,14 +56,21 @@ namespace sync {
     X(ClearTable) \
     X(AddColumn) \
     X(EraseColumn) \
-    X(ContainerSet) \
-    X(ContainerInsert) \
-    X(ContainerMove) \
-    X(ContainerSwap) \
-    X(ContainerErase) \
-    X(ContainerClear) \
+    X(ArraySet) \
+    X(ArrayInsert) \
+    X(ArrayMove) \
+    X(ArraySwap) \
+    X(ArrayErase) \
+    X(ArrayClear) \
 
-enum class ContainerType { none=0, links=1, array=2, dict=3 };
+
+enum class ContainerType {
+    None = 0,
+    Reserved0 = 1,
+    Array = 2,
+    Set = 3,
+    Dictionary = 4,
+};
 
 struct Instruction {
     // Base classes for instructions with common fields. They enable the merge
@@ -96,9 +103,9 @@ struct Instruction {
     Type type;
 
     template <class F>
-    void visit(F&& lambda);
+    auto visit(F&& lambda);
     template <class F>
-    void visit(F&& lambda) const;
+    auto visit(F&& lambda) const;
 
     template <class T> T& get_as()
     {
@@ -201,7 +208,7 @@ struct Instruction::SelectTable {
     InternString table;
 };
 
-struct Instruction::SelectContainer
+struct Instruction::SelectField
     : Instruction::FieldInstructionBase
 {
     InternString link_target_table;
@@ -260,13 +267,13 @@ struct Instruction::EraseSubstring
 struct Instruction::ClearTable {
 };
 
-struct Instruction::ContainerSet {
+struct Instruction::ArraySet {
     Instruction::Payload payload;
     uint32_t ndx;
     uint32_t prior_size;
 };
 
-struct Instruction::ContainerInsert {
+struct Instruction::ArrayInsert {
     // payload carries the value in case of LinkList
     // payload is empty in case of Array, Dict or any other container type
     Instruction::Payload payload;
@@ -274,25 +281,26 @@ struct Instruction::ContainerInsert {
     uint32_t prior_size;
 };
 
-struct Instruction::ContainerMove {
+struct Instruction::ArrayMove {
     uint32_t ndx_1;
     uint32_t ndx_2;
 };
 
-struct Instruction::ContainerErase {
+struct Instruction::ArrayErase {
     uint32_t ndx;
     uint32_t prior_size;
     bool implicit_nullify;
 };
 
-struct Instruction::ContainerSwap {
+struct Instruction::ArraySwap {
     uint32_t ndx_1;
     uint32_t ndx_2;
 };
 
-struct Instruction::ContainerClear {
+struct Instruction::ArrayClear {
     uint32_t prior_size;
 };
+
 
 // If container_type != ContainerType::none, creates a subtable:
 // +---+---+-------+
@@ -338,14 +346,18 @@ struct InstructionHandler {
 /// Implementation:
 
 #if !defined(__GNUC__) || defined(__clang__) || __GNUC__ > 4 // GCC 4.x does not support std::is_trivially_copyable
-#define REALM_CHECK_TRIVIALLY_COPYABLE(X) static_assert(std::is_trivially_copyable<Instruction::X>::value, "Instructions must be trivially copyable.");
+#define REALM_CHECK_TRIVIALLY_COPYABLE(X) static_assert(std::is_trivially_copyable<Instruction::X>::value, #X" Instructions must be trivially copyable.");
     REALM_FOR_EACH_INSTRUCTION_TYPE(REALM_CHECK_TRIVIALLY_COPYABLE)
 #undef REALM_CHECK_TRIVIALLY_COPYABLE
 #endif // __GNUC__
 
-#define REALM_CHECK_INSTRUCTION_SIZE(X) static_assert(sizeof(Instruction::X) <= Instruction::max_instruction_size, "Instruction too big.");
+#ifdef _WIN32 // FIXME: Fails in VS. 
+#define REALM_CHECK_INSTRUCTION_SIZE(X)
+#else
+#define REALM_CHECK_INSTRUCTION_SIZE(X) static_assert(sizeof(Instruction::X) <= Instruction::max_instruction_size, #X" Instruction too big.");
     REALM_FOR_EACH_INSTRUCTION_TYPE(REALM_CHECK_INSTRUCTION_SIZE)
 #undef REALM_CHECK_INSTRUCTION_SIZE
+#endif
 
 #define REALM_DEFINE_INSTRUCTION_GET_TYPE(X) \
     template <> struct Instruction::GetType<Instruction::Type::X> { using Type = Instruction::X; }; \
@@ -361,7 +373,7 @@ Instruction::Instruction(T instr): type(GetInstructionType<T>::value)
 }
 
 template <class F>
-void Instruction::visit(F&& lambda)
+auto Instruction::visit(F&& lambda)
 {
     switch (type) {
 #define REALM_VISIT_INSTRUCTION(X) \
@@ -373,9 +385,9 @@ void Instruction::visit(F&& lambda)
 }
 
 template <class F>
-void Instruction::visit(F&& lambda) const
+auto Instruction::visit(F&& lambda) const
 {
-    const_cast<Instruction*>(this)->visit(std::forward<F>(lambda));
+    return const_cast<Instruction*>(this)->visit(std::forward<F>(lambda));
 }
 
 std::ostream& operator<<(std::ostream&, Instruction::Type);

@@ -20,6 +20,7 @@
 #define REALM_SYNC_IMPL_INSTRUCTION_APPLIER_HPP
 
 #include <realm/sync/instructions.hpp>
+#include <realm/sync/changeset.hpp>
 #include <realm/util/logger.hpp>
 
 namespace realm {
@@ -28,26 +29,36 @@ namespace sync {
 struct Changeset;
 
 struct InstructionApplier {
-    explicit InstructionApplier(Group& group);
+    explicit InstructionApplier(Group& group) noexcept;
 
+    /// Throws BadChangesetError if application fails due to a problem with the
+    /// changeset.
+    ///
+    /// FIXME: Consider using std::error_code instead of throwing
+    /// BadChangesetError.
     void apply(const Changeset& log, util::Logger* logger);
 
-private:
+    void begin_apply(const Changeset& log, util::Logger* logger) noexcept;
+    void end_apply() noexcept;
+
+protected:
+    StringData get_string(InternString) const;
+    StringData get_string(StringBufferRange) const;
 #define REALM_DECLARE_INSTRUCTION_HANDLER(X) void operator()(const Instruction::X&);
     REALM_FOR_EACH_INSTRUCTION_TYPE(REALM_DECLARE_INSTRUCTION_HANDLER)
 #undef REALM_DECLARE_INSTRUCTION_HANDLER
     friend struct Instruction; // to allow visitor
 
+    template<class A> static void apply(A& applier, const Changeset& log, util::Logger* logger);
+
+    Group& m_group;
+private:
     const Changeset* m_log = nullptr;
     util::Logger* m_logger = nullptr;
-    Group& m_group;
     TableRef m_selected_table;
     TableRef m_selected_array;
     LinkViewRef m_selected_link_list;
     TableRef m_link_target_table;
-
-    StringData get_string(InternString) const;
-    StringData get_string(StringBufferRange) const;
 
     template <class... Args>
     void log(const char* fmt, Args&&... args)
@@ -58,10 +69,52 @@ private:
     }
 
     void bad_transaction_log(const char*) const; // Throws
+
+    TableRef table_for_class_name(StringData) const; // Throws
 };
 
-inline InstructionApplier::InstructionApplier(Group& group): m_group(group)
-{}
+
+
+
+// Implementation
+
+inline InstructionApplier::InstructionApplier(Group& group) noexcept:
+    m_group(group)
+{
+}
+
+inline void InstructionApplier::begin_apply(const Changeset& log, util::Logger* logger) noexcept
+{
+    m_log = &log;
+    m_logger = logger;
+}
+
+inline void InstructionApplier::end_apply() noexcept
+{
+    m_log = nullptr;
+    m_logger = nullptr;
+    m_selected_table = TableRef{};
+    m_selected_link_list = LinkViewRef{};
+    m_link_target_table = TableRef{};
+}
+
+template<class A>
+inline void InstructionApplier::apply(A& applier, const Changeset& log, util::Logger* logger)
+{
+    applier.begin_apply(log, logger);
+    for (auto instr: log) {
+        if (!instr)
+            continue;
+        instr->visit(applier); // Throws
+    }
+    applier.end_apply();
+
+}
+
+inline void InstructionApplier::apply(const Changeset& log, util::Logger* logger)
+{
+    apply(*this, log, logger); // Throws
+}
 
 } // namespace sync
 } // namespace realm

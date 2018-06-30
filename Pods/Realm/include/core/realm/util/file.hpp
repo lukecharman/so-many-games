@@ -31,6 +31,16 @@
 #include <dirent.h> // POSIX.1-2001
 #endif
 
+#if defined(_MSC_VER) && _MSC_VER >= 1900 // compiling with at least Visual Studio 2015
+#include <experimental/filesystem>
+namespace std {
+    namespace filesystem = std::experimental::filesystem::v1;
+}
+#define REALM_HAVE_STD_FILESYSTEM 1
+#else
+#define REALM_HAVE_STD_FILESYSTEM 0
+#endif
+
 #include <realm/utilities.hpp>
 #include <realm/util/features.h>
 #include <realm/util/assert.hpp>
@@ -68,13 +78,31 @@ bool try_make_dir(const std::string& path);
 /// particular reason).
 void remove_dir(const std::string& path);
 
+/// Same as remove_dir() except that this one returns false, rather
+/// than throwing an exception, if the specified directory did not
+/// exist. If the directory did exist, and was deleted, this function
+/// returns true.
+bool try_remove_dir(const std::string& path);
+
 /// Remove the specified directory after removing all its contents. Files
 /// (nondirectory entries) will be removed as if by a call to File::remove(),
 /// and empty directories as if by a call to remove_dir().
 ///
 /// \throw File::AccessError If removal of the directory, or any of its contents
 /// fail.
+///
+/// remove_dir_recursive() assumes that no other process or thread is making
+/// simultaneous changes in the directory.
 void remove_dir_recursive(const std::string& path);
+
+/// Same as remove_dir_recursive() except that this one returns false, rather
+/// than throwing an exception, if the specified directory did not
+/// exist. If the directory did exist, and was deleted, this function
+/// returns true.
+///
+/// try_remove_dir_recursive() assumes that no other process or thread is making
+/// simultaneous changes in the directory.
+bool try_remove_dir_recursive(const std::string& path);
 
 /// Create a new unique directory for temporary files. The absolute
 /// path to the new directory is returned without a trailing slash.
@@ -241,11 +269,7 @@ public:
     /// a file that is opened in read-only mode, is an error.
     void resize(SizeType);
 
-    /// The same as prealloc_if_supported() but when the operation is
-    /// not supported by the system, this function will still increase
-    /// the file size when the specified region extends beyond the
-    /// current end of the file. This allows you to both extend and
-    /// allocate in one operation.
+    /// Same effect as prealloc_if_supported(original_size, new_size);
     ///
     /// The downside is that this function is not guaranteed to have
     /// atomic behaviour on all systems, that is, two processes, or
@@ -254,7 +278,7 @@ public:
     /// through distinct File instances.
     ///
     /// \sa prealloc_if_supported()
-    void prealloc(SizeType offset, size_t size);
+    void prealloc(size_t new_size);
 
     /// When supported by the system, allocate space on the target
     /// device for the specified region of the file. If the region
@@ -395,7 +419,7 @@ public:
     /// the synchronization operation is complete. The specified
     /// address range must be (a subset of) one that was previously returned by
     /// map().
-    static void sync_map(void* addr, size_t size);
+    static void sync_map(FileDesc fd, void* addr, size_t size);
 
     /// Check whether the specified file or directory exists. Note
     /// that a file or directory that resides in a directory that the
@@ -427,7 +451,7 @@ public:
     static void remove(const std::string& path);
 
     /// Same as remove() except that this one returns false, rather
-    /// than thriowing an exception, if the specified file does not
+    /// than throwing an exception, if the specified file does not
     /// exist. If the file did exist, and was deleted, this function
     /// returns true.
     static bool try_remove(const std::string& path);
@@ -562,6 +586,7 @@ private:
     struct MapBase {
         void* m_addr = nullptr;
         size_t m_size = 0;
+        FileDesc m_fd;
 
         MapBase() noexcept;
         ~MapBase() noexcept;
@@ -896,6 +921,8 @@ public:
 private:
 #ifndef _WIN32
     DIR* m_dirp;
+#elif REALM_HAVE_STD_FILESYSTEM
+    std::filesystem::directory_iterator m_iterator;
 #endif
 };
 
@@ -1049,6 +1076,7 @@ inline void File::MapBase::map(const File& f, AccessMode a, size_t size, int map
     m_addr = f.map(a, size, map_flags, offset);
 #endif
     m_size = size;
+    m_fd = f.m_fd;
 }
 
 inline void File::MapBase::unmap() noexcept
@@ -1060,6 +1088,7 @@ inline void File::MapBase::unmap() noexcept
 #if REALM_ENABLE_ENCRYPTION
     m_encrypted_mapping = nullptr;
 #endif
+    m_fd = 0;
 }
 
 inline void File::MapBase::remap(const File& f, AccessMode a, size_t size, int map_flags)
@@ -1068,13 +1097,14 @@ inline void File::MapBase::remap(const File& f, AccessMode a, size_t size, int m
 
     m_addr = f.remap(m_addr, m_size, a, size, map_flags);
     m_size = size;
+    m_fd = f.m_fd;
 }
 
 inline void File::MapBase::sync()
 {
     REALM_ASSERT(m_addr);
 
-    File::sync_map(m_addr, m_size);
+    File::sync_map(m_fd, m_addr, m_size);
 }
 
 template <class T>
@@ -1148,6 +1178,7 @@ inline T* File::Map<T>::release() noexcept
 {
     T* addr = static_cast<T*>(m_addr);
     m_addr = nullptr;
+    m_fd = 0;
     return addr;
 }
 
@@ -1200,8 +1231,10 @@ inline File::Streambuf::pos_type File::Streambuf::seekpos(pos_type pos, std::ios
 inline void File::Streambuf::flush()
 {
     size_t n = pptr() - pbase();
-    m_file.write(pbase(), n);
-    setp(m_buffer.get(), epptr());
+    if (n > 0) {
+        m_file.write(pbase(), n);
+        setp(m_buffer.get(), epptr());
+    }
 }
 
 inline File::AccessError::AccessError(const std::string& msg, const std::string& path)

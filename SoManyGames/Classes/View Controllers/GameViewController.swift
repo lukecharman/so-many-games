@@ -31,7 +31,7 @@ class GameViewController: UIViewController {
         view.addSubview(doneButton)
 
         doneButton.anchor(to: view, at: .bottomRight)
-        doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        doneButton.addTarget(self, action: #selector(doneButtonTapped), for: UIControl.Event.touchUpInside)
     }
 
     @objc func doneButtonTapped() {

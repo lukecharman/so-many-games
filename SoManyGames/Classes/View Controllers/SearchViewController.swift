@@ -37,9 +37,9 @@ class SearchViewController: KeyboardObservableUIViewController {
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 84, right: 0)
         view.backgroundColor = .clear
 
-        view.bringSubview(toFront: bottomBar)
-        view.bringSubview(toFront: cancelButton)
-        view.bringSubview(toFront: textField)
+        view.bringSubviewToFront(bottomBar)
+        view.bringSubviewToFront(cancelButton)
+        view.bringSubviewToFront(textField)
 
         bottomBarHeightConstraint.constant = iPad ? 92 : 76
         buttonHeightConstraint.constant = 44
@@ -153,7 +153,7 @@ class SearchViewController: KeyboardObservableUIViewController {
     override func keyboardWillMove(to rect: CGRect, over duration: TimeInterval) {
         let closing = rect.origin.y == collectionView.frame.size.height + 20
         bottomBarBottomConstraint.constant = closing ? 0 : rect.size.height
-        UIView.animateKeyframes(withDuration: duration - 0.1, delay: 0, options: .calculationModeCubic, animations: {
+        UIView.animateKeyframes(withDuration: duration - 0.1, delay: 0, options: UIView.KeyframeAnimationOptions.calculationModeCubic, animations: {
             self.view.layoutIfNeeded()
         }, completion: nil)
     }
@@ -166,7 +166,7 @@ class SearchViewController: KeyboardObservableUIViewController {
             return
         }
 
-        let style: UIAlertControllerStyle = UIDevice.current.userInterfaceIdiom == .pad ? .alert : .actionSheet
+        let style: UIAlertController.Style = UIDevice.current.userInterfaceIdiom == .pad ? .alert : .actionSheet
         let alert = UIAlertController(title: "Which Platform?", message: nil, preferredStyle: style)
         alert.view.tintColor = Colors.dark
 
@@ -227,7 +227,7 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
 extension SearchViewController: UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard let term = textField.text, !term.characters.isEmpty else { return false }
+        guard let term = textField.text, !term.isEmpty else { return false }
         search(forTerm: term)
         return true
     }

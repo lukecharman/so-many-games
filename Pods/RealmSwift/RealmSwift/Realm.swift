@@ -438,7 +438,7 @@ public final class Realm {
 
      :nodoc:
      */
-    public func delete<T>(_ objects: List<T>) {
+    public func delete<Element: Object>(_ objects: List<Element>) {
         rlmRealm.deleteObjects(objects._rlmArray)
     }
 
@@ -451,7 +451,7 @@ public final class Realm {
 
      :nodoc:
      */
-    public func delete<T>(_ objects: Results<T>) {
+    public func delete<Element: Object>(_ objects: Results<Element>) {
         rlmRealm.deleteObjects(objects.rlmResults)
     }
 
@@ -473,8 +473,8 @@ public final class Realm {
 
      - returns: A `Results` containing the objects.
      */
-    public func objects<T>(_ type: T.Type) -> Results<T> {
-        return Results<T>(RLMGetObjects(rlmRealm, (type as Object.Type).className(), nil))
+    public func objects<Element: Object>(_ type: Element.Type) -> Results<Element> {
+        return Results(RLMGetObjects(rlmRealm, type.className(), nil))
     }
 
     /**
@@ -505,10 +505,10 @@ public final class Realm {
 
      - returns: An object of type `type`, or `nil` if no instance with the given primary key exists.
      */
-    public func object<T: Object, K>(ofType type: T.Type, forPrimaryKey key: K) -> T? {
+    public func object<Element: Object, KeyType>(ofType type: Element.Type, forPrimaryKey key: KeyType) -> Element? {
         return unsafeBitCast(RLMGetObject(rlmRealm, (type as Object.Type).className(),
                                           dynamicBridgeCast(fromSwift: key)) as! RLMObjectBase?,
-                             to: Optional<T>.self)
+                             to: Optional<Element>.self)
     }
 
     /**
@@ -552,7 +552,7 @@ public final class Realm {
      delivered instantly, multiple notifications may be coalesced.
 
      You must retain the returned token for as long as you want updates to be sent to the block. To stop receiving
-     updates, call `stop()` on the token.
+     updates, call `invalidate()` on the token.
 
      - parameter block: A block which is called to process Realm notifications. It receives the following parameters:
                         `notification`: the incoming notification; `realm`: the Realm for which the notification
@@ -560,7 +560,7 @@ public final class Realm {
 
      - returns: A token which must be held for as long as you wish to continue receiving change notifications.
      */
-    public func addNotificationBlock(_ block: @escaping NotificationBlock) -> NotificationToken {
+    public func observe(_ block: @escaping NotificationBlock) -> NotificationToken {
         return rlmRealm.addNotificationBlock { rlmNotification, _ in
             switch rlmNotification {
             case RLMNotification.DidChange:

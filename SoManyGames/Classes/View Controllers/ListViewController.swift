@@ -83,7 +83,7 @@ extension ListViewController {
         superview.addSubview(button)
 
         button.anchor(to: collectionView, at: .bottomLeft)
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped), for: UIControl.Event.touchUpInside)
     }
 
     func makeSortButton() {
@@ -93,7 +93,7 @@ extension ListViewController {
         superview.addSubview(sortButton)
 
         sortButton.anchor(to: collectionView, at: .bottomRight)
-        sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
+        sortButton.addTarget(self, action: #selector(sortButtonTapped), for: UIControl.Event.touchUpInside)
     }
 
     func makeListButton() {
@@ -103,7 +103,7 @@ extension ListViewController {
         superview.addSubview(listButton)
 
         listButton.anchor(to: collectionView, at: .bottomCenter)
-        listButton.addTarget(self, action: #selector(listButtonTapped), for: .touchUpInside)
+        listButton.addTarget(self, action: #selector(listButtonTapped), for: UIControl.Event.touchUpInside)
     }
 
     func makeClearButton() {
@@ -113,14 +113,14 @@ extension ListViewController {
         superview.addSubview(clearButton)
 
         clearButton.anchor(to: collectionView, at: .bottomRight)
-        clearButton.addTarget(self, action: #selector(clearButtonTapped), for: .touchUpInside)
+        clearButton.addTarget(self, action: #selector(clearButtonTapped), for: UIControl.Event.touchUpInside)
         clearButton.isHidden = true
     }
 
     @objc func buttonTapped() {
         guard Backlog.manager.currentGameListType == .active else { return }
 
-        if button.title(for: .normal) == "add" {
+        if button.title(for: UIControl.State.normal) == "add" {
             performSegue(withIdentifier: "AddGame", sender: nil)
         } else {
             delete()
@@ -146,7 +146,7 @@ extension ListViewController {
 
         let active = Backlog.manager.currentGameListType == .active
         let title = active ? "playing" : "finished"
-        listButton.setTitle(title, for: .normal)
+        listButton.setTitle(title, for: UIControl.State.normal)
         button.isHidden = !active
         clearButton.isHidden = active || games.count == 0
     }
@@ -177,11 +177,11 @@ extension ListViewController {
 
     func updateButton() {
         if selectedGames.count > 0 {
-            button.setTitle("delete", for: .normal)
+            button.setTitle("delete", for: UIControl.State.normal)
             sortButton.isHidden = true
             listButton.isHidden = true
         } else {
-            button.setTitle("add", for: .normal)
+            button.setTitle("add", for: UIControl.State.normal)
             sortButton.isHidden = false
             listButton.isHidden = false
         }
@@ -350,13 +350,13 @@ extension ListViewController: UICollectionViewDelegateFlowLayout {
 extension ListViewController {
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? GameCell else { return }
+//        guard let cell = collectionView.cellForItem(at: indexPath) as? GameCell else { return }
 //        select(cell: cell, at: indexPath)
         performSegue(withIdentifier: "ShowDetails", sender: games[indexPath.item])
     }
 
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? GameCell else { return }
+//        guard let cell = collectionView.cellForItem(at: indexPath) as? GameCell else { return }
 //        deselect(cell: cell, at: indexPath)
     }
 

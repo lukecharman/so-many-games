@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13178.6" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="6j5-2L-txc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13178.6" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="RXl-92-d9e">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -15,7 +15,7 @@
         </array>
     </customFonts>
     <scenes>
-        <!--List View Controller-->
+        <!--Item-->
         <scene sceneID="yD2-Oy-mFt">
             <objects>
                 <collectionViewController id="6j5-2L-txc" customClass="ListViewController" customModule="SoManyGames" customModuleProvider="target" sceneMemberID="viewController">
@@ -27,7 +27,7 @@
                             <size key="itemSize" width="320" height="58"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="20" maxX="0.0" maxY="84"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="84"/>
                         </collectionViewFlowLayout>
                         <view key="backgroundView" opaque="NO" contentMode="scaleToFill" id="mK9-ao-yr6" customClass="GradientView" customModule="SoManyGames" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="-20" width="320" height="568"/>
@@ -36,7 +36,7 @@
                         </view>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GameCell" id="0W4-9V-8NN" customClass="GameCell" customModule="SoManyGames" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="20" width="320" height="58"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="58"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="58"/>
@@ -105,6 +105,7 @@
                             <outlet property="delegate" destination="6j5-2L-txc" id="cB7-cJ-u9U"/>
                         </connections>
                     </collectionView>
+                    <tabBarItem key="tabBarItem" title="Item" id="sjd-nq-oal"/>
                     <navigationItem key="navigationItem" id="6cB-GG-c4S"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
@@ -115,7 +116,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Qj-Ry-gA8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2064.8000000000002" y="134.48275862068968"/>
+            <point key="canvasLocation" x="2461.875" y="134.1549295774648"/>
         </scene>
         <!--Game View Controller-->
         <scene sceneID="Ohy-2P-d2C">
@@ -148,7 +149,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1FA-3J-e8K" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2876" y="445"/>
+            <point key="canvasLocation" x="3271.875" y="444.71830985915494"/>
         </scene>
         <!--Search View Controller-->
         <scene sceneID="yWe-MG-ZlG">
@@ -307,7 +308,24 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njL-4Z-4gD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2884" y="-250"/>
+            <point key="canvasLocation" x="3281.25" y="-250.35211267605635"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="2kh-KJ-2zb">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="RXl-92-d9e" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="SVv-dK-1uF">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="6j5-2L-txc" kind="relationship" relationship="viewControllers" id="kre-Bt-9Q7"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="B89-qZ-gSy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1686" y="134"/>
         </scene>
     </scenes>
     <resources>

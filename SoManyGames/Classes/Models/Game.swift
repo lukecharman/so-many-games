@@ -8,7 +8,7 @@
 
 import RealmSwift
 
-@objc class Game: Object {
+@objc public class Game: Object {
 
     @objc dynamic var hasFullDetails = false
 
@@ -40,7 +40,7 @@ import RealmSwift
         return lhs.id == rhs.id
     }
 
-    override var hashValue: Int {
+    override public var hashValue: Int {
         return id.hashValue
     }
 

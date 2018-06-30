@@ -25,22 +25,21 @@
 #include <cstdio>
 #include <algorithm>
 #include <functional>
+#include <time.h>
 
-#ifdef _MSC_VER
-#if REALM_UWP
-struct timeval {
-    long tv_sec;
-    long tv_usec;
-};
-#endif
-#include <windows.h>
+#ifdef _WIN32
+
+#include <WinSock2.h>
 #include <intrin.h>
+#include <BaseTsd.h>
+
+#if !defined(_SSIZE_T_) && !defined(_SSIZE_T_DEFINED)
+typedef SSIZE_T ssize_t;
+#define _SSIZE_T_
+#define _SSIZE_T_DEFINED
 #endif
 
-#if defined(_MSC_VER)
-#include <BaseTsd.h>
-typedef SSIZE_T ssize_t;
-#endif
+#endif // _WIN32
 
 #include <realm/util/features.h>
 #include <realm/util/assert.hpp>
@@ -131,6 +130,7 @@ void millisleep(unsigned long milliseconds);
 int gettimeofday(struct timeval * tp, struct timezone * tzp);
 #endif
 
+int64_t platform_timegm(tm time);
 
 #ifdef REALM_SLAB_ALLOC_TUNE
 void process_mem_usage(double& vm_usage, double& resident_set);

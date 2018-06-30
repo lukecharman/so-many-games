@@ -305,6 +305,10 @@ public:
     // calling sort and distinct. This is a convenience method for bindings.
     void apply_descriptor_ordering(DescriptorOrdering new_ordering);
 
+    // Gets a readable and parsable string which completely describes the sort and
+    // distinct operations applied to this view.
+    std::string get_descriptor_ordering_description() const;
+
     // Returns whether the rows are guaranteed to be in table order.
     // This is true only of unsorted TableViews created from either:
     // - Table::find_all()
@@ -424,6 +428,8 @@ private:
     void adj_row_acc_insert_rows(size_t row_ndx, size_t num_rows) noexcept;
     void adj_row_acc_erase_row(size_t row_ndx) noexcept;
     void adj_row_acc_move_over(size_t from_row_ndx, size_t to_row_ndx) noexcept;
+    void adj_row_acc_swap_rows(size_t row_ndx_1, size_t row_ndx_2) noexcept;
+    void adj_row_acc_move_row(size_t from_row_ndx, size_t to_row_ndx) noexcept;
     void adj_row_acc_clear() noexcept;
 };
 

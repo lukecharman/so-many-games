@@ -20,13 +20,13 @@ class ActionButton: UIButton {
 
     convenience init(title: String) {
         self.init()
-        setTitle(title, for: .normal)
+        setTitle(title, for: UIControl.State.normal)
     }
 
     func anchor(to view: UIView, at anchor: ActionButtonAnchor) {
         translatesAutoresizingMaskIntoConstraints = false
 
-        widthAnchor.constraint(equalToConstant: ActionButton.side * 2).isActive = true
+        widthAnchor.constraint(equalToConstant: ActionButton.side * 1.75).isActive = true
         heightAnchor.constraint(equalToConstant: ActionButton.side).isActive = true
 
         switch anchor {
@@ -47,8 +47,8 @@ class ActionButton: UIButton {
     }
 
     override func draw(_ rect: CGRect) {
-        setTitleColor(Colors.darkest, for: .normal)
-        setBackgroundImage(UIImage(named: "Button"), for: .normal)
+        setTitleColor(Colors.darkest, for: UIControl.State.normal)
+        setBackgroundImage(UIImage(named: "Button"), for: UIControl.State.normal)
 
         titleLabel?.font = UIFont(name: fontName, size: Sizes.button)
 

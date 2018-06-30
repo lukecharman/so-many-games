@@ -40,7 +40,6 @@ public:
 
     void insert_column(size_t column_ndx, ColumnType type, StringData name, ColumnAttr attr = col_attr_None);
     void rename_column(size_t column_ndx, StringData new_name);
-    void move_column(size_t from, size_t to);
 
     /// Erase the column at the specified index, and move columns at
     /// succeeding indexes to the next lower index.
@@ -107,6 +106,7 @@ public:
     bool operator!=(const Spec&) const noexcept;
     //@}
 
+    void detach() noexcept;
     void destroy() noexcept;
 
     size_t get_ndx_in_parent() const noexcept;
@@ -135,11 +135,7 @@ private:
     Array m_subspecs;     // 4th slot in m_top (optional)
     Array m_enumkeys;     // 5th slot in m_top (optional)
     struct SubspecPtr {
-        SubspecPtr()
-            : m_is_spec_ptr(false)
-        {
-        }
-        SubspecPtr(bool is_spec_ptr)
+        SubspecPtr(bool is_spec_ptr = false)
             : m_is_spec_ptr(is_spec_ptr)
         {
         }
