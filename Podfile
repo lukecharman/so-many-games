@@ -1,12 +1,19 @@
-platform :ios, '10.3'
+platform :ios, '11.0'
 
 use_frameworks!
-inhibit_all_warnings!
+
+workspace 'SoManyGames.xcworkspace'
 
 target 'SoManyGames' do
-    pod 'RealmSwift'
-    pod 'Fabric'
-    pod 'Crashlytics'
+  project 'SoManyGames.xcodeproj'
+
+  pod 'Fabric'
+  pod 'Crashlytics'
+  pod 'RealmSwift'
 end
 
-target 
+target 'Brain' do
+  project 'Brain/Brain.xcodeproj'
+
+  pod 'RealmSwift'
+end

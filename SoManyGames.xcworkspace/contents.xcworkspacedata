@@ -5,7 +5,7 @@
       location = "group:SoManyGames.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:SMGBrain/SMGBrain.xcodeproj">
+      location = "group:Brain/Brain.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
